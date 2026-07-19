@@ -1,0 +1,62 @@
+<svg width="1280" height="800" viewBox="0 0 1280 800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="800" fill="#FAF7F1"/>
+  <rect x="0" y="0" width="1280" height="72" fill="#15161A"/>
+  <circle cx="36" cy="36" r="6" fill="#FF6B35"/>
+  <rect x="60" y="26" width="180" height="20" rx="4" fill="#FAF7F1" opacity="0.85"/>
+
+  <!-- stat tiles -->
+  <g>
+    <rect x="48" y="112" width="278" height="120" rx="10" fill="#FFFFFF" stroke="#15161A" stroke-opacity="0.08"/>
+    <rect x="72" y="136" width="140" height="12" rx="3" fill="#15161A" opacity="0.5"/>
+    <rect x="72" y="168" width="120" height="28" rx="4" fill="#15161A" opacity="0.85"/>
+    <rect x="72" y="204" width="80" height="10" rx="3" fill="#0F5257" opacity="0.7"/>
+
+    <rect x="342" y="112" width="278" height="120" rx="10" fill="#FFFFFF" stroke="#15161A" stroke-opacity="0.08"/>
+    <rect x="366" y="136" width="140" height="12" rx="3" fill="#15161A" opacity="0.5"/>
+    <rect x="366" y="168" width="120" height="28" rx="4" fill="#15161A" opacity="0.85"/>
+    <rect x="366" y="204" width="80" height="10" rx="3" fill="#FF6B35" opacity="0.8"/>
+
+    <rect x="636" y="112" width="278" height="120" rx="10" fill="#FFFFFF" stroke="#15161A" stroke-opacity="0.08"/>
+    <rect x="660" y="136" width="140" height="12" rx="3" fill="#15161A" opacity="0.5"/>
+    <rect x="660" y="168" width="120" height="28" rx="4" fill="#15161A" opacity="0.85"/>
+    <rect x="660" y="204" width="80" height="10" rx="3" fill="#0F5257" opacity="0.7"/>
+
+    <rect x="930" y="112" width="302" height="120" rx="10" fill="#15161A"/>
+    <rect x="954" y="136" width="140" height="12" rx="3" fill="#FAF7F1" opacity="0.6"/>
+    <rect x="954" y="168" width="140" height="28" rx="4" fill="#FAF7F1" opacity="0.9"/>
+    <rect x="954" y="204" width="90" height="10" rx="3" fill="#FF6B35"/>
+  </g>
+
+  <!-- chart -->
+  <rect x="48" y="256" width="720" height="360" rx="12" fill="#FFFFFF" stroke="#15161A" stroke-opacity="0.08"/>
+  <rect x="80" y="288" width="160" height="14" rx="3" fill="#15161A" opacity="0.6"/>
+  <g fill="#0F5257" opacity="0.85">
+    <rect x="90" y="480" width="48" height="100" rx="4"/>
+    <rect x="160" y="440" width="48" height="140" rx="4"/>
+    <rect x="230" y="500" width="48" height="80" rx="4"/>
+    <rect x="300" y="400" width="48" height="180" rx="4"/>
+    <rect x="370" y="420" width="48" height="160" rx="4"/>
+    <rect x="440" y="360" width="48" height="220" rx="4"/>
+    <rect x="510" y="330" width="48" height="250" rx="4"/>
+  </g>
+  <rect x="580" y="300" width="48" height="280" rx="4" fill="#FF6B35"/>
+  <rect x="650" y="440" width="48" height="140" rx="4" fill="#0F5257" opacity="0.85"/>
+
+  <!-- side list -->
+  <rect x="808" y="256" width="424" height="360" rx="12" fill="#FFFFFF" stroke="#15161A" stroke-opacity="0.08"/>
+  <rect x="840" y="288" width="160" height="14" rx="3" fill="#15161A" opacity="0.6"/>
+  <g opacity="0.75">
+    <rect x="840" y="330" width="220" height="12" rx="3" fill="#15161A"/>
+    <rect x="1140" y="330" width="60" height="12" rx="3" fill="#15161A"/>
+    <rect x="840" y="368" width="200" height="12" rx="3" fill="#15161A"/>
+    <rect x="1140" y="368" width="60" height="12" rx="3" fill="#15161A"/>
+    <rect x="840" y="406" width="230" height="12" rx="3" fill="#15161A"/>
+    <rect x="1140" y="406" width="60" height="12" rx="3" fill="#15161A"/>
+    <rect x="840" y="444" width="180" height="12" rx="3" fill="#15161A"/>
+    <rect x="1140" y="444" width="60" height="12" rx="3" fill="#15161A"/>
+    <rect x="840" y="482" width="210" height="12" rx="3" fill="#15161A"/>
+    <rect x="1140" y="482" width="60" height="12" rx="3" fill="#15161A"/>
+  </g>
+
+  <text x="640" y="780" font-family="monospace" font-size="18" fill="#15161A" fill-opacity="0.35" text-anchor="middle">PLACEHOLDER SCREENSHOT — REPORTS DASHBOARD</text>
+</svg>

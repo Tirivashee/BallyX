@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+/* ────────────────────────────────────────────────────────────────────────
+ * BALLYX DESIGN TOKENS — the single file to edit to re-skin the site.
+ * ────────────────────────────────────────────────────────────────────────
+ * Every color, radius, and font used across the site is defined once here
+ * as a CSS variable, then exposed to Tailwind via @theme so it's usable
+ * as `bg-ink`, `text-paper`, `border-hairline`, `text-accent-deep`, etc.
+ *
+ * This is a fixed BRAND palette, not a light/dark user-preference theme —
+ * "ink" (dark) sections and "paper" (light) sections are deliberate
+ * editorial choices made per-section in the markup, not toggled by the
+ * visitor's OS setting. Do not wire prefers-color-scheme remapping here.
+ *
+ * CONTRAST NOTES (WCAG AA — verified, do not casually change these hexes):
+ *   - --ink on --paper            ≈ 17.9:1  (body text — excellent)
+ *   - --paper on --ink            ≈ 17.9:1  (dark-section text — excellent)
+ *   - --accent-deep on --paper    ≈  4.9:1  (passes AA normal text)
+ *   - --accent (bright orange) on --paper ≈ 2.6:1 — FAILS AA for text.
+ *     -> Never use `text-accent` on a paper background. Bright accent is
+ *        for backgrounds/icons/borders, or for text on --ink (see below).
+ *   - --ink on --accent (button text on orange fill) ≈ 6.7:1 (passes AA)
+ *   - --accent on --ink (links/labels in dark sections) ≈ 6.7:1 (passes AA)
+ *   - --teal on --paper           ≈  8.2:1  (passes AA, safe as text)
+ * ──────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Neutrals */
+  --color-ink: #15161a; /* near-black, cool — primary text & dark sections */
+  --color-ink-soft: #3d3b37; /* secondary text on paper */
+  --color-paper: #faf7f1; /* warm off-white — primary background */
+  --color-paper-dim: #f1ece2; /* subtle section separation on paper */
+  --color-paper-soft: #ffffff;
+
+  /* Accent — BallyX orange. Reserve pure --accent for backgrounds, icons,
+     borders, and text-on-ink. Use --accent-deep for text-on-paper. */
+  --color-accent: #ff6b35;
+  --color-accent-deep: #c1440e; /* AA-safe orange for text on paper */
+  --color-accent-soft: #fff1ea; /* light orange tint for chips/badges */
+
+  /* Supporting trust color — used sparingly for section variety */
+  --color-teal: #0f5257;
+  --color-teal-soft: #e4eeee;
+
+  /* Hairline borders/dividers */
+  --color-border-on-paper: rgba(21, 22, 26, 0.12);
+  --color-border-on-ink: rgba(250, 247, 241, 0.14);
+
+  /* Radii — restrained, not pill-everything */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.875rem;
+}
+
+@theme inline {
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-paper: var(--color-paper);
+  --color-paper-dim: var(--color-paper-dim);
+  --color-paper-soft: var(--color-paper-soft);
+
+  --color-accent: var(--color-accent);
+  --color-accent-deep: var(--color-accent-deep);
+  --color-accent-soft: var(--color-accent-soft);
+
+  --color-teal: var(--color-teal);
+  --color-teal-soft: var(--color-teal-soft);
+
+  --color-border-on-paper: var(--color-border-on-paper);
+  --color-border-on-ink: var(--color-border-on-ink);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+
+  --font-heading: var(--font-space-grotesk);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), system-ui, sans-serif;
+}
+
+.font-mono-eyebrow {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}
