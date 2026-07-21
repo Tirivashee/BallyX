@@ -5,6 +5,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import { BrandName } from "@/components/ui/brand-name";
 import { hosting } from "@/lib/site-config";
 
 export function HostingFaq() {
@@ -21,8 +22,12 @@ export function HostingFaq() {
         <Accordion type="single" collapsible className="mt-10">
           {hosting.faq.map((item, i) => (
             <AccordionItem key={item.question} value={`item-${i}`}>
-              <AccordionTrigger>{item.question}</AccordionTrigger>
-              <AccordionContent>{item.answer}</AccordionContent>
+              <AccordionTrigger>
+                <BrandName text={item.question} />
+              </AccordionTrigger>
+              <AccordionContent>
+                <BrandName text={item.answer} />
+              </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>

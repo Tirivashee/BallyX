@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 
 import { Reveal } from "@/components/motion/reveal";
@@ -8,7 +9,17 @@ import type { Project } from "@/lib/projects";
 export function ProjectCard({ project, delay = 0 }: { project: Project; delay?: number }) {
   return (
     <Reveal delay={delay}>
-      <Card className="h-full">
+      <Card className="h-full overflow-hidden">
+        <div className="relative aspect-[16/10] w-full border-b border-ink/10 bg-paper">
+          <Image
+            src={project.image}
+            alt={`${project.name} preview`}
+            fill
+            unoptimized
+            className="object-cover"
+            sizes="(min-width: 640px) 50vw, 100vw"
+          />
+        </div>
         <CardHeader>
           <div className="flex items-start justify-between gap-4">
             <CardTitle>{project.name}</CardTitle>

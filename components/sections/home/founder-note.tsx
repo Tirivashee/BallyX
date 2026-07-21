@@ -1,5 +1,6 @@
 import { Container } from "@/components/layout/container";
 import { Reveal } from "@/components/motion/reveal";
+import { BrandName } from "@/components/ui/brand-name";
 import { founderNote } from "@/lib/site-config";
 
 export function FounderNote() {
@@ -17,7 +18,7 @@ export function FounderNote() {
                 key={paragraph.slice(0, 24)}
                 className="text-lg leading-relaxed text-ink"
               >
-                {paragraph}
+                <BrandName text={paragraph} />
               </p>
             ))}
           </div>
@@ -31,7 +32,9 @@ export function FounderNote() {
               <p className="text-sm font-medium text-ink">
                 {founderNote.name}
               </p>
-              <p className="text-sm text-ink-soft">{founderNote.title}</p>
+              <p className="text-sm text-ink-soft">
+                <BrandName text={founderNote.title} />
+              </p>
             </div>
           </div>
         </Reveal>

@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { brand, nav } from "@/lib/site-config";
 import { Button } from "@/components/ui/button";
+import { BrandName } from "@/components/ui/brand-name";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -15,14 +16,14 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-ink/10 bg-paper/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b border-white/50 bg-paper/55 backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_8px_32px_-12px_rgba(21,22,26,0.18)]">
       <div className="mx-auto flex h-18 max-w-6xl items-center justify-between px-6">
         <Link
           href="/"
           className="font-heading text-xl font-semibold tracking-tight text-ink"
           onClick={() => setOpen(false)}
         >
-          {brand.shortName}
+          <BrandName text={brand.shortName} />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -67,7 +68,7 @@ export function Header() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="overflow-hidden border-t border-ink/10 md:hidden"
+            className="overflow-hidden border-t border-white/50 md:hidden"
           >
             <nav className="flex flex-col gap-1 px-6 py-4">
               {nav.map((item) => (

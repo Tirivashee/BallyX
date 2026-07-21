@@ -32,8 +32,8 @@ export default async function Image() {
               display: "flex",
             }}
           />
-          <span style={{ fontSize: 32, fontWeight: 700, letterSpacing: -1 }}>
-            {brand.shortName}
+          <span style={{ fontSize: 32, fontWeight: 700, letterSpacing: -1, display: "flex" }}>
+            Bally<span style={{ color: "#FF6B35" }}>X</span>
           </span>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>

@@ -1,5 +1,6 @@
 import { Container } from "@/components/layout/container";
 import { Reveal } from "@/components/motion/reveal";
+import { BrandName } from "@/components/ui/brand-name";
 import { team } from "@/lib/site-config";
 
 export function Team() {
@@ -13,9 +14,11 @@ export function Team() {
           Founder-led, for now
         </h2>
         <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-soft">
-          {team.length === 1
-            ? "BallyX is currently a team of one — building deliberately, and looking to grow the team as Pluto grows."
-            : "The people building BallyX."}
+          {team.length === 1 ? (
+            <BrandName text="BallyX is currently a team of one — building deliberately, and looking to grow the team as Pluto grows." />
+          ) : (
+            <BrandName text="The people building BallyX." />
+          )}
         </p>
 
         <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -39,8 +42,7 @@ export function Team() {
               We&apos;re hiring — eventually
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-              Future roles will be posted here once BallyX is ready to grow
-              the team beyond its founder. Nothing open right now.
+              <BrandName text="Future roles will be posted here once BallyX is ready to grow the team beyond its founder. Nothing open right now." />
             </p>
           </div>
         </div>

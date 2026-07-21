@@ -1,5 +1,6 @@
 import { Container } from "@/components/layout/container";
 import { Reveal } from "@/components/motion/reveal";
+import { BrandName } from "@/components/ui/brand-name";
 import { timeline } from "@/lib/site-config";
 
 export function Timeline() {
@@ -22,7 +23,7 @@ export function Timeline() {
                 </span>
                 <div>
                   <h3 className="font-heading text-lg font-medium tracking-tight text-ink">
-                    {item.title}
+                    <BrandName text={item.title} />
                   </h3>
                   <p className="mt-1 text-sm leading-relaxed text-ink-soft">
                     {item.description}

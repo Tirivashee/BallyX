@@ -94,9 +94,9 @@ export const footerLinks = {
 export const pluto = {
   name: "Pluto",
   category: "Local-first POS & business management",
-  status: "{{PLUTO_STATUS}}", // e.g. "Early access" once true
+  status: "Early access", // e.g. "Early access" once true
   statusDisplay: "Early access",
-  pricing: "{{PLUTO_PRICING}}", // e.g. "From $XX/month" once confirmed
+  pricing: "From $29.99/year", // e.g. "From $XX/month" once confirmed
   pricingDisplay: "TBC — founding customers get locked-in early pricing",
   platform: "Desktop app (Windows) — built with Tauri + React",
   tagline: "The register that doesn't stop working when the power does.",
@@ -189,7 +189,7 @@ export const pluto = {
     {
       question: "Is Pluto available now?",
       answer:
-        "Pluto is in {{PLUTO_STATUS}}. We're onboarding a small number of founding customers before a wider release — reach out if you'd like to be one of them.",
+        "Pluto is in early access. We're onboarding a small number of founding customers before a wider release — reach out if you'd like to be one of them.",
     },
     {
       question: "Does Pluto need an internet connection to work?",
@@ -209,7 +209,7 @@ export const pluto = {
     {
       question: "What does Pluto cost?",
       answer:
-        "Pricing is {{PLUTO_PRICING}}. Founding customers who join during early access will get preferential, locked-in pricing as a thank-you for coming in early.",
+        "Pricing is $29.99/month. Founding customers who join during early access will get preferential, locked-in pricing as a thank-you for coming in early.",
     },
     {
       question: "What devices does Pluto run on?",
@@ -229,9 +229,9 @@ export const hosting = {
   tagline: "Managed hosting for the software we build you.",
   subhead:
     "Deployments, SSL, custom domains, backups, and uptime monitoring — handled by the same team that built your site or system, so nothing falls in a gap between developer and host.",
-  status: "{{HOSTING_STATUS}}", // e.g. "Now onboarding" once true
+  status: "Now onboarding", // e.g. "Now onboarding" once true
   statusDisplay: "Now onboarding",
-  pricing: "{{HOSTING_PRICING}}",
+  pricing: "$14.99/month", // e.g. "$XX/month" once confirmed
   pricingDisplay: "TBC — plans sized to what you actually need hosted",
 
   features: [
@@ -276,7 +276,7 @@ export const hosting = {
     {
       id: "starter",
       name: "Starter",
-      price: "{{HOSTING_PRICE_STARTER}}",
+      price: "$7/month", // {{HOSTING_PRICE_STARTER}}
       tagline: "A single marketing site or small web app.",
       features: [
         "1 site",
@@ -290,7 +290,7 @@ export const hosting = {
     {
       id: "standard",
       name: "Standard",
-      price: "{{HOSTING_PRICE_STANDARD}}",
+      price: "$19/month", // {{HOSTING_PRICE_STANDARD}}
       tagline: "A business system or app your team relies on daily.",
       features: [
         "Up to 3 sites",
@@ -305,7 +305,7 @@ export const hosting = {
     {
       id: "pro",
       name: "Pro",
-      price: "{{HOSTING_PRICE_PRO}}",
+      price: "$24.99/month", // {{HOSTING_PRICE_PRO}}
       tagline: "Multiple systems, or one that can't afford downtime.",
       features: [
         "Unlimited sites",
@@ -347,7 +347,7 @@ export const hosting = {
   /** Trust/guarantee points. Numbers are placeholders until policy is set. */
   guarantees: [
     {
-      title: "{{HOSTING_UPTIME_SLA}} uptime target",
+      title: "99.9% uptime target",
       description:
         "Automated monitoring watches every hosted site around the clock.",
     },
@@ -362,7 +362,7 @@ export const hosting = {
         "Automatic backups mean a bad deploy or outage is never a total loss.",
     },
     {
-      title: "{{HOSTING_MONEY_BACK_POLICY}}",
+      title: "No lock-in",
       description:
         "Full terms confirmed once hosting moves out of early access.",
     },
@@ -374,17 +374,17 @@ export const hosting = {
    * and don't imply this is a live registrar lookup (it isn't).
    */
   domainPricing: [
-    { tld: ".com", price: "{{DOMAIN_PRICE_COM}}" },
-    { tld: ".co.zw", price: "{{DOMAIN_PRICE_COZW}}" },
-    { tld: ".africa", price: "{{DOMAIN_PRICE_AFRICA}}" },
-    { tld: ".online", price: "{{DOMAIN_PRICE_ONLINE}}" },
+    { tld: ".com", price: "$7.99" },
+    { tld: ".co.zw", price: "$2.99" },
+    { tld: ".africa", price: "$9.99" },
+    { tld: ".online", price: "$12.99" },
   ] as const,
 
   faq: [
     {
       question: "Is BallyX Hosting available now?",
       answer:
-        "Hosting is {{HOSTING_STATUS}} for clients we build software for. Reach out if you'd like your site or system hosted with us.",
+        "Hosting is available for clients we build software for. Reach out if you'd like your site or system hosted with us.",
     },
     {
       question: "Can I host a site that BallyX didn't build?",
@@ -399,7 +399,7 @@ export const hosting = {
     {
       question: "What does hosting cost?",
       answer:
-        "Pricing is {{HOSTING_PRICING}} — plans will be sized to what's actually being hosted rather than a one-size-fits-all fee.",
+        "Pricing is $7/month — plans will be sized to what's actually being hosted rather than a one-size-fits-all fee.",
     },
     {
       question: "Can I transfer a domain I already own?",
@@ -478,7 +478,7 @@ export const founderNote = {
     "Pluto started as a question: what would a point-of-sale system look like if it were designed from day one for load-shedding, for two currencies, and for an owner who needs to actually trust the numbers their staff give them? Not retrofitted for Zimbabwe — built for it.",
     "We're early. We're small on purpose. And we'd rather build something a handful of businesses genuinely rely on than something that looks impressive and solves nothing real.",
   ],
-  name: "T O. Chitanda",
+  name: "T.O. Chitanda",
   title: "Founder, BallyX",
 } as const;
 
@@ -533,9 +533,9 @@ export const timeline = [
 // Founder-led team. Placeholder entries — replace with real people/photos.
 export const team = [
   {
-    name: "{{FOUNDER_NAME}}",
+    name: "T.O. Chitanda",
     role: "Founder & Engineering Lead",
-    bio: "{{FOUNDER_BIO}}",
+    bio: "Founder and engineering lead at BallyX. I build secure, offline-first software for African businesses — starting with Pluto, a POS platform for Zimbabwean SMEs.",
   },
 ] as const;
 

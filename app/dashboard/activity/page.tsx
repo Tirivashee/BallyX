@@ -1,3 +1,4 @@
+import { BrandName } from "@/components/ui/brand-name";
 import { mockActivity } from "@/lib/dashboard-mock";
 
 export default function DashboardActivityPage() {
@@ -17,7 +18,7 @@ export default function DashboardActivityPage() {
           <li key={entry.id} className="relative">
             <span className="absolute -left-[29px] top-1 h-2.5 w-2.5 rounded-full bg-teal" />
             <p className="text-xs text-ink-soft">
-              {entry.timestamp} · {entry.actor}
+              {entry.timestamp} · <BrandName text={entry.actor} />
             </p>
             <p className="mt-1 text-sm font-medium text-ink">
               {entry.action}

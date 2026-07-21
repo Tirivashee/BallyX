@@ -2,6 +2,7 @@ import { ShieldCheck, MapPinned, WifiOff, Users } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { Reveal } from "@/components/motion/reveal";
+import { BrandName } from "@/components/ui/brand-name";
 import { whyBallyX } from "@/lib/site-config";
 
 const icons = [ShieldCheck, MapPinned, WifiOff, Users];
@@ -13,7 +14,7 @@ export function WhyBallyX() {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,320px)_1fr] lg:gap-16">
           <div>
             <span className="font-mono-eyebrow text-xs uppercase tracking-wider text-accent-deep">
-              Why BallyX
+              Why <BrandName text="BallyX" className="text-accent" />
             </span>
             <h2 className="mt-4 font-heading text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
               Engineered for how business actually happens here.

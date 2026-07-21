@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { BrandName } from "@/components/ui/brand-name";
 import {
   mockStats,
   mockSites,
@@ -91,7 +92,7 @@ export default function DashboardOverviewPage() {
             {mockActivity.slice(0, 3).map((entry) => (
               <div key={entry.id}>
                 <p className="text-xs text-ink-soft">
-                  {entry.timestamp} · {entry.actor}
+                  {entry.timestamp} · <BrandName text={entry.actor} />
                 </p>
                 <p className="text-sm font-medium text-ink">
                   {entry.action}

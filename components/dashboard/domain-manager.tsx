@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { BrandName } from "@/components/ui/brand-name";
 import { cn } from "@/lib/utils";
 import type { MockDnsRecord, MockDomain } from "@/lib/dashboard-mock";
 
@@ -186,8 +187,7 @@ export function DomainManager({
           ))}
         </ul>
         <p className="mt-3 text-xs text-ink-soft">
-          Using BallyX Hosting nameservers. Custom nameservers aren&apos;t
-          supported in this preview yet.
+          <BrandName text="Using BallyX Hosting nameservers. Custom nameservers aren't supported in this preview yet." />
         </p>
       </Card>
 

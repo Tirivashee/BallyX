@@ -6,6 +6,7 @@ import { ArrowRight, Lock, LockOpen } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { BrandName } from "@/components/ui/brand-name";
 import { mockDomains as initialDomains, type MockDomain } from "@/lib/dashboard-mock";
 
 export default function DashboardDomainsPage() {
@@ -66,7 +67,7 @@ export default function DashboardDomainsPage() {
                     {d.domain}
                   </div>
                   <div className="mt-0.5 text-xs text-ink-soft">
-                    {d.registrar}
+                    <BrandName text={d.registrar} />
                   </div>
                 </td>
                 <td className="px-4 py-3">

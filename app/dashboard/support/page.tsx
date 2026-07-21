@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { BrandName } from "@/components/ui/brand-name";
 import { mockTickets, type MockTicket } from "@/lib/dashboard-mock";
 
 export default function DashboardSupportPage() {
@@ -38,8 +39,8 @@ export default function DashboardSupportPage() {
           Support
         </h1>
         <p className="mt-1 text-sm text-ink-soft">
-          Illustrative demo data — submitting a ticket here doesn&apos;t
-          send anything to BallyX. For real support, use{" "}
+          <BrandName text="Illustrative demo data — submitting a ticket here doesn't send anything to BallyX." />{" "}
+          For real support, use{" "}
           <a href="/contact" className="underline underline-offset-4">
             Contact
           </a>
@@ -97,7 +98,7 @@ export default function DashboardSupportPage() {
               {ticket.messages.map((m, i) => (
                 <div key={i} className="text-sm">
                   <p className="font-medium text-ink">
-                    {m.from}
+                    <BrandName text={m.from} />
                     <span className="ml-2 text-xs font-normal text-ink-soft">
                       {m.at}
                     </span>

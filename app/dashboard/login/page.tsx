@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { BrandName } from "@/components/ui/brand-name";
 import { setHostingDemoAuthed } from "@/lib/dashboard-auth";
 
 export default function DashboardLoginPage() {
@@ -28,7 +29,7 @@ export default function DashboardLoginPage() {
         <div className="rounded-lg border border-ink/10 bg-paper-soft p-8">
           <Badge variant="teal">Demo preview</Badge>
           <h1 className="mt-4 font-heading text-2xl font-semibold tracking-tight text-ink">
-            Sign in to BallyX Hosting
+            <BrandName text="Sign in to BallyX Hosting" />
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-ink-soft">
             This is a front-end preview of the client dashboard — enter

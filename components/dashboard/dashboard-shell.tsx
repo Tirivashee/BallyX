@@ -15,6 +15,7 @@ import {
 
 import { Container } from "@/components/layout/container";
 import { Badge } from "@/components/ui/badge";
+import { BrandName } from "@/components/ui/brand-name";
 import { UserMenu } from "@/components/dashboard/user-menu";
 import { cn } from "@/lib/utils";
 
@@ -38,7 +39,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <Container className="flex flex-wrap items-center justify-between gap-3 py-4">
           <div className="flex items-center gap-3">
             <span className="font-heading text-lg font-semibold tracking-tight text-ink">
-              BallyX Hosting
+              <BrandName text="BallyX Hosting" />
             </span>
             <Badge variant="teal">Demo preview — UI only</Badge>
           </div>

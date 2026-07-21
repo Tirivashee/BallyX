@@ -3,6 +3,7 @@ import { ArrowRight, Check } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { Reveal } from "@/components/motion/reveal";
+import { BrandName } from "@/components/ui/brand-name";
 import type { Service } from "@/lib/services";
 
 export function ServiceRow({ service }: { service: Service }) {
@@ -16,7 +17,7 @@ export function ServiceRow({ service }: { service: Service }) {
 
           <div>
             <h2 className="font-heading text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-              {service.title}
+              <BrandName text={service.title} />
             </h2>
             <p className="mt-4 max-w-md text-base leading-relaxed text-ink-soft">
               {service.description}
