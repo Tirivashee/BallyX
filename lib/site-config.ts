@@ -52,6 +52,8 @@ export const brand = {
 export const nav = [
   { label: "Product", href: "/product" },
   { label: "Services", href: "/services" },
+  { label: "Downloads", href: "/downloads" },
+  { label: "Projects", href: "/projects" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ] as const;
@@ -62,15 +64,18 @@ export const footerLinks = {
     { label: "Features", href: "/product#features" },
     { label: "Pricing", href: "/product#pricing" },
     { label: "Early access", href: "/product#early-access" },
+    { label: "Downloads", href: "/downloads" },
   ],
   services: [
     { label: "Custom software", href: "/services#custom-software" },
     { label: "Business systems", href: "/services#business-systems" },
     { label: "Web & mobile apps", href: "/services#web-mobile" },
     { label: "Security consulting", href: "/services#security" },
+    { label: "BallyX Hosting", href: "/hosting" },
   ],
   company: [
     { label: "About", href: "/about" },
+    { label: "Projects", href: "/projects" },
     { label: "Our values", href: "/about#values" },
     { label: "Careers", href: "/about#careers" },
     { label: "Contact", href: "/contact" },
@@ -215,6 +220,206 @@ export const pluto = {
 } as const;
 
 /**
+ * BallyX Hosting — a managed-hosting service for sites/systems we build.
+ * Status and pricing are explicitly placeholder, same convention as
+ * `pluto` above: keep the {{...}} markers until real figures exist.
+ */
+export const hosting = {
+  name: "BallyX Hosting",
+  tagline: "Managed hosting for the software we build you.",
+  subhead:
+    "Deployments, SSL, custom domains, backups, and uptime monitoring — handled by the same team that built your site or system, so nothing falls in a gap between developer and host.",
+  status: "{{HOSTING_STATUS}}", // e.g. "Now onboarding" once true
+  statusDisplay: "Now onboarding",
+  pricing: "{{HOSTING_PRICING}}",
+  pricingDisplay: "TBC — plans sized to what you actually need hosted",
+
+  features: [
+    {
+      title: "Managed deployments",
+      description:
+        "We handle releases and updates for sites and systems we build — no server maintenance for you to manage.",
+    },
+    {
+      title: "Free SSL & custom domains",
+      description:
+        "Every site gets a valid SSL certificate and support for connecting your own domain, included by default.",
+    },
+    {
+      title: "Uptime monitoring",
+      description:
+        "Automated checks watch for downtime so issues get caught and fixed before a customer notices.",
+    },
+    {
+      title: "Automatic backups",
+      description:
+        "Regular backups of your site or system's data, so a bad deploy or outage is never a total loss.",
+    },
+    {
+      title: "Direct support",
+      description:
+        "Hosting issues go straight to the team that built the system — no third-party support queue.",
+    },
+    {
+      title: "Client dashboard",
+      description:
+        "A dashboard to see your site's status, domains, and deployment history at a glance. Currently in preview.",
+    },
+  ] as const,
+
+  /**
+   * Indicative plan tiers. Prices are explicitly placeholder — see the
+   * {{...}} convention note above. Feature lists are honest today: don't
+   * add a checkmark for something the team can't yet deliver.
+   */
+  plans: [
+    {
+      id: "starter",
+      name: "Starter",
+      price: "{{HOSTING_PRICE_STARTER}}",
+      tagline: "A single marketing site or small web app.",
+      features: [
+        "1 site",
+        "Free SSL & custom domain",
+        "Automatic backups (weekly)",
+        "Uptime monitoring",
+        "Email support",
+      ],
+      highlighted: false,
+    },
+    {
+      id: "standard",
+      name: "Standard",
+      price: "{{HOSTING_PRICE_STANDARD}}",
+      tagline: "A business system or app your team relies on daily.",
+      features: [
+        "Up to 3 sites",
+        "Free SSL & custom domains",
+        "Automatic backups (daily)",
+        "Uptime monitoring & alerts",
+        "Priority support",
+        "Staging environment",
+      ],
+      highlighted: true,
+    },
+    {
+      id: "pro",
+      name: "Pro",
+      price: "{{HOSTING_PRICE_PRO}}",
+      tagline: "Multiple systems, or one that can't afford downtime.",
+      features: [
+        "Unlimited sites",
+        "Free SSL & custom domains",
+        "Automatic backups (daily + on-demand)",
+        "24/7 uptime monitoring & alerts",
+        "Priority support with direct line",
+        "Staging environment",
+        "Quarterly security review",
+      ],
+      highlighted: false,
+    },
+  ] as const,
+
+  /** "How it works" onboarding steps shown on the marketing page. */
+  steps: [
+    {
+      title: "Tell us what needs hosting",
+      description:
+        "A marketing site, a web app, or a system we've already built you — reach out and we'll scope a plan around it.",
+    },
+    {
+      title: "We deploy & connect your domain",
+      description:
+        "We set up hosting, SSL, and your domain (new or existing) so everything resolves correctly from day one.",
+    },
+    {
+      title: "We monitor & back it up",
+      description:
+        "Uptime monitoring and automatic backups run in the background, so issues get caught before they become outages.",
+    },
+    {
+      title: "You get dashboard access",
+      description:
+        "See site status, domains, and deployment history in one place. The dashboard is currently in preview.",
+    },
+  ] as const,
+
+  /** Trust/guarantee points. Numbers are placeholders until policy is set. */
+  guarantees: [
+    {
+      title: "{{HOSTING_UPTIME_SLA}} uptime target",
+      description:
+        "Automated monitoring watches every hosted site around the clock.",
+    },
+    {
+      title: "Free migration",
+      description:
+        "Moving an existing site to BallyX Hosting doesn't cost extra.",
+    },
+    {
+      title: "Daily backups",
+      description:
+        "Automatic backups mean a bad deploy or outage is never a total loss.",
+    },
+    {
+      title: "{{HOSTING_MONEY_BACK_POLICY}}",
+      description:
+        "Full terms confirmed once hosting moves out of early access.",
+    },
+  ] as const,
+
+  /**
+   * Indicative TLD pricing shown next to the domain-interest form. Every
+   * price is a placeholder — replace with real figures before launch,
+   * and don't imply this is a live registrar lookup (it isn't).
+   */
+  domainPricing: [
+    { tld: ".com", price: "{{DOMAIN_PRICE_COM}}" },
+    { tld: ".co.zw", price: "{{DOMAIN_PRICE_COZW}}" },
+    { tld: ".africa", price: "{{DOMAIN_PRICE_AFRICA}}" },
+    { tld: ".online", price: "{{DOMAIN_PRICE_ONLINE}}" },
+  ] as const,
+
+  faq: [
+    {
+      question: "Is BallyX Hosting available now?",
+      answer:
+        "Hosting is {{HOSTING_STATUS}} for clients we build software for. Reach out if you'd like your site or system hosted with us.",
+    },
+    {
+      question: "Can I host a site that BallyX didn't build?",
+      answer:
+        "Right now hosting is offered alongside custom software we build for you. Ask us — this may become a standalone offering later.",
+    },
+    {
+      question: "What does the client dashboard show?",
+      answer:
+        "The dashboard is currently a front-end preview of what's planned — site status, domains & SSL, and deployment history. It isn't yet wired up to real infrastructure data.",
+    },
+    {
+      question: "What does hosting cost?",
+      answer:
+        "Pricing is {{HOSTING_PRICING}} — plans will be sized to what's actually being hosted rather than a one-size-fits-all fee.",
+    },
+    {
+      question: "Can I transfer a domain I already own?",
+      answer:
+        "Yes — tell us the domain and current registrar, and we'll walk you through transferring it or simply pointing its DNS at BallyX Hosting, whichever makes more sense.",
+    },
+    {
+      question: "Can I make my own DNS changes?",
+      answer:
+        "Once your dashboard access is live, yes. Until then, send us the change and we'll make it directly.",
+    },
+    {
+      question: "What happens if I need to move away from BallyX Hosting?",
+      answer:
+        "Your domain and data are yours. We'll help export what's needed and point DNS wherever you move to — no lock-in.",
+    },
+  ] as const,
+} as const;
+
+/**
  * "Who Pluto is built for" — these are illustrative example use-cases,
  * not client names or case studies. Never rename this section or its
  * copy in a way that implies these are real customers.
@@ -273,7 +478,7 @@ export const founderNote = {
     "Pluto started as a question: what would a point-of-sale system look like if it were designed from day one for load-shedding, for two currencies, and for an owner who needs to actually trust the numbers their staff give them? Not retrofitted for Zimbabwe — built for it.",
     "We're early. We're small on purpose. And we'd rather build something a handful of businesses genuinely rely on than something that looks impressive and solves nothing real.",
   ],
-  name: "{{FOUNDER_NAME}}",
+  name: "T O. Chitanda",
   title: "Founder, BallyX",
 } as const;
 
@@ -318,7 +523,7 @@ export const timeline = [
       "Work starts on a local-first POS system shaped by direct conversations with SME owners.",
   },
   {
-    year: "{{CURRENT_YEAR}}",
+    year: "2026",
     title: "Early access",
     description:
       "Pluto opens to a small group of founding customers ahead of a wider release.",

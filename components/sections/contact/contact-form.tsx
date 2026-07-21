@@ -22,7 +22,7 @@ function SubmitButton() {
   );
 }
 
-export function ContactForm() {
+export function ContactForm({ initialMessage }: { initialMessage?: string }) {
   const [state, formAction] = useActionState(submitContactForm, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -83,7 +83,13 @@ export function ContactForm() {
 
       <div className="space-y-2">
         <Label htmlFor="message">Message</Label>
-        <Textarea id="message" name="message" required minLength={10} />
+        <Textarea
+          id="message"
+          name="message"
+          required
+          minLength={10}
+          defaultValue={initialMessage}
+        />
         {state.fieldErrors?.message && (
           <p className="text-xs text-accent-deep">{state.fieldErrors.message[0]}</p>
         )}

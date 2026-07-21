@@ -4,6 +4,7 @@ import { ProductHero } from "@/components/sections/product/product-hero";
 import { DifferentiatorsDetail } from "@/components/sections/product/differentiators-detail";
 import { FeatureGrid } from "@/components/sections/product/feature-grid";
 import { ScreenshotGallery } from "@/components/sections/product/screenshot-gallery";
+import { TestimonialsPlaceholder } from "@/components/sections/home/testimonials-placeholder";
 import { Roadmap } from "@/components/sections/product/roadmap";
 import { PlutoFaq } from "@/components/sections/product/pluto-faq";
 import { PricingEarlyAccess } from "@/components/sections/product/pricing-early-access";
@@ -52,6 +53,7 @@ export default function ProductPage() {
       <DifferentiatorsDetail />
       <FeatureGrid />
       <ScreenshotGallery />
+      <TestimonialsPlaceholder />
       <Roadmap />
       <PlutoFaq />
       <PricingEarlyAccess />

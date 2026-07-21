@@ -12,7 +12,16 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
 };
 
-export default function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ domain?: string }>;
+}) {
+  const { domain } = await searchParams;
+  const initialMessage = domain
+    ? `Hi — I'd like to check availability and hosting for ${domain.slice(0, 100)}.`
+    : undefined;
+
   return (
     <section className="py-20 md:py-28">
       <Container>
@@ -83,7 +92,7 @@ export default function ContactPage() {
               Prefer writing it out? We read every message.
             </p>
             <div className="mt-6">
-              <ContactForm />
+              <ContactForm initialMessage={initialMessage} />
             </div>
           </div>
         </div>

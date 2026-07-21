@@ -1,4 +1,5 @@
-import { Check } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Check } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { Reveal } from "@/components/motion/reveal";
@@ -20,6 +21,15 @@ export function ServiceRow({ service }: { service: Service }) {
             <p className="mt-4 max-w-md text-base leading-relaxed text-ink-soft">
               {service.description}
             </p>
+            {service.href && (
+              <Link
+                href={service.href}
+                className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-accent-deep hover:underline"
+              >
+                Learn more
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            )}
           </div>
 
           <ul className="space-y-3">

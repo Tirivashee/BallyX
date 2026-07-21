@@ -157,6 +157,57 @@ this list also covers placeholders that aren't literally bracketed
       `components/sections/home/founder-note.tsx` and
       `components/sections/about/team.tsx` with real photos
 
+**Hosting (`lib/site-config.ts`)**
+- [ ] `hosting.status` / `hosting.statusDisplay` — current real status
+- [ ] `hosting.pricing` / `hosting.pricingDisplay` — real pricing once decided
+- [ ] `hosting.plans[].price` — real prices for Starter/Standard/Pro once set
+- [ ] `hosting.guarantees` — real uptime SLA % and money-back policy
+      (currently `{{HOSTING_UPTIME_SLA}}` / `{{HOSTING_MONEY_BACK_POLICY}}`)
+- [ ] `hosting.domainPricing` — real indicative TLD prices (currently all
+      `{{DOMAIN_PRICE_*}}` placeholders); the domain form on `/hosting`
+      is intentionally not a live registrar lookup — it routes to
+      `/contact` with the domain prefilled, don't wire it to a fake
+      "availability" result
+- [ ] `/dashboard/*` is a front-end-only preview: fake local-storage
+      "auth" (`lib/dashboard-auth.ts`) and mock data
+      (`lib/dashboard-mock.ts` — sites, domains, DNS records, invoices,
+      backups, activity, support tickets), not connected to any real
+      infrastructure or backend. It's excluded from the sitemap and
+      disallowed in `robots.ts`. Replace with real auth + data before
+      promoting this beyond a demo, and update the "Demo preview"
+      badges/copy once it's real.
+- [ ] `mockInvoices[].amount` — currently `{{INVOICE_AMOUNT}}` placeholders
+
+**Downloads (`lib/downloads.ts`)**
+- [ ] Every app's `version`, `releaseDate`, and `fileSize` are
+      placeholders — including Pluto's, since none of these are
+      confirmed anywhere yet. Mars and Venus additionally need a real
+      `tagline`, `description`, and `platforms` list — nothing about
+      what these two apps are is defined elsewhere in the codebase.
+- [ ] All three apps have `downloadReady: false`, so the Download
+      button renders as a disabled "Coming soon" state — there are no
+      real installer files in the repo. Once a real installer is
+      hosted, set `downloadReady: true` and `downloadUrl` to a real
+      file/URL for that app.
+- [ ] App icons live in `public/images/app-icons/` (moved from the
+      untracked `App Icons/` folder at the repo root during setup).
+- [ ] `/downloads/mars` and `/downloads/venus` render illustrative mockup
+      screenshots (`public/images/screenshots/mars-*.svg` /
+      `venus-*.svg`) and an honest "coming soon" placeholder instead of
+      real user testimonials — same convention as
+      `components/sections/home/testimonials-placeholder.tsx`. Replace
+      both once real screenshots/feedback exist; don't fabricate either
+      in the meantime.
+- [ ] `/downloads/pluto` redirects to `/product` rather than duplicating
+      Pluto's marketing page — `/product` now also has a
+      `TestimonialsPlaceholder` section for the same reason.
+
+**Projects (`lib/projects.ts`)**
+- [ ] Every entry's `category`, `description`, `services`, and `year` are
+      placeholders — fill in the real one-liners for each client project
+      (e.g. Ballylike, Kumfence).
+- [ ] Add any additional client projects beyond the two seeded here.
+
 **Screenshots**
 - [ ] Everything in `public/images/screenshots/*.svg` is an illustrative
       mockup, not a real product screenshot. Swap in real Pluto screenshots
