@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Coins, ShieldCheck, WifiOff } from "lucide-react";
 
 import { ProductHero } from "@/components/sections/product/product-hero";
 import { DifferentiatorsDetail } from "@/components/sections/product/differentiators-detail";
@@ -6,7 +7,7 @@ import { FeatureGrid } from "@/components/sections/product/feature-grid";
 import { ScreenshotGallery } from "@/components/sections/product/screenshot-gallery";
 import { TestimonialsPlaceholder } from "@/components/sections/home/testimonials-placeholder";
 import { Roadmap } from "@/components/sections/product/roadmap";
-import { PlutoFaq } from "@/components/sections/product/pluto-faq";
+import { ProductFaq } from "@/components/sections/product/product-faq";
 import { PricingEarlyAccess } from "@/components/sections/product/pricing-early-access";
 import { brand, pluto } from "@/lib/site-config";
 
@@ -50,12 +51,12 @@ export default function ProductPage() {
         }}
       />
       <ProductHero />
-      <DifferentiatorsDetail />
-      <FeatureGrid />
+      <DifferentiatorsDetail items={pluto.differentiators} icons={[WifiOff, Coins, ShieldCheck]} />
+      <FeatureGrid features={pluto.features} />
       <ScreenshotGallery />
       <TestimonialsPlaceholder />
       <Roadmap />
-      <PlutoFaq />
+      <ProductFaq faq={pluto.faq} />
       <PricingEarlyAccess />
     </>
   );

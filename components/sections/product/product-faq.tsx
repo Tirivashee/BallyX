@@ -5,9 +5,14 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { pluto } from "@/lib/site-config";
 
-export function PlutoFaq() {
+export function ProductFaq({
+  heading = "Honest answers, plainly put.",
+  faq,
+}: {
+  heading?: string;
+  faq: readonly { question: string; answer: string }[];
+}) {
   return (
     <section id="faq" className="py-24 md:py-32">
       <Container className="max-w-3xl">
@@ -15,11 +20,11 @@ export function PlutoFaq() {
           FAQ
         </span>
         <h2 className="mt-4 font-heading text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-          Honest answers, plainly put.
+          {heading}
         </h2>
 
         <Accordion type="single" collapsible className="mt-10">
-          {pluto.faq.map((item, i) => (
+          {faq.map((item, i) => (
             <AccordionItem key={item.question} value={`item-${i}`}>
               <AccordionTrigger>{item.question}</AccordionTrigger>
               <AccordionContent>{item.answer}</AccordionContent>

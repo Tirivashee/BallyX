@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, MessageCircle } from "lucide-react";
 
@@ -5,10 +8,18 @@ import { Container } from "@/components/layout/container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScreenshotFrame } from "@/components/sections/screenshot-frame";
+import { Lightbox } from "@/components/ui/lightbox";
 import { getWhatsAppLink } from "@/lib/whatsapp";
 import { pluto } from "@/lib/site-config";
 
+const shot = {
+  src: "/images/screenshots/dashboard.png",
+  alt: "Screenshot of the Pluto reports dashboard",
+};
+
 export function ProductHero() {
+  const [open, setOpen] = useState(false);
+
   return (
     <section className="relative overflow-hidden border-b border-border-on-ink bg-ink text-paper">
       <div
@@ -47,11 +58,19 @@ export function ProductHero() {
         </div>
 
         <ScreenshotFrame
-          src="/images/screenshots/dashboard.svg"
-          alt="Placeholder screenshot of the Pluto reports dashboard"
+          src={shot.src}
+          alt={shot.alt}
           priority
+          onClick={() => setOpen(true)}
         />
       </Container>
+
+      <Lightbox
+        images={[shot]}
+        index={open ? 0 : null}
+        onClose={() => setOpen(false)}
+        onNavigate={() => {}}
+      />
     </section>
   );
 }

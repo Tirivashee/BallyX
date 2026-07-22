@@ -1,26 +1,33 @@
-import { WifiOff, Coins, ShieldCheck } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { Reveal } from "@/components/motion/reveal";
-import { pluto } from "@/lib/site-config";
 
-const icons = [WifiOff, Coins, ShieldCheck];
-
-export function DifferentiatorsDetail() {
+export function DifferentiatorsDetail({
+  eyebrow = "The three things that matter",
+  heading = "Not retrofitted for Zimbabwe. Built for it.",
+  items,
+  icons,
+}: {
+  eyebrow?: string;
+  heading?: string;
+  items: readonly { id: string; eyebrow: string; title: string; detail: string }[];
+  icons: LucideIcon[];
+}) {
   return (
     <section id="features" className="py-24 md:py-32">
       <Container>
         <div className="max-w-2xl">
           <span className="font-mono-eyebrow text-xs uppercase tracking-wider text-accent-deep">
-            The three things that matter
+            {eyebrow}
           </span>
           <h2 className="mt-4 font-heading text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-            Not retrofitted for Zimbabwe. Built for it.
+            {heading}
           </h2>
         </div>
 
         <div className="mt-16 space-y-16">
-          {pluto.differentiators.map((d, i) => {
+          {items.map((d, i) => {
             const Icon = icons[i];
             return (
               <Reveal key={d.id}>

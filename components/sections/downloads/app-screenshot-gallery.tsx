@@ -1,6 +1,11 @@
+"use client";
+
+import { useState } from "react";
+
 import { Container } from "@/components/layout/container";
 import { Reveal } from "@/components/motion/reveal";
 import { ScreenshotFrame } from "@/components/sections/screenshot-frame";
+import { Lightbox } from "@/components/ui/lightbox";
 import type { DownloadApp } from "@/lib/downloads";
 
 export function AppScreenshotGallery({
@@ -10,6 +15,8 @@ export function AppScreenshotGallery({
   appName: string;
   screenshots: DownloadApp["screenshots"];
 }) {
+  const [index, setIndex] = useState<number | null>(null);
+
   if (screenshots.length === 0) return null;
 
   return (
@@ -25,7 +32,11 @@ export function AppScreenshotGallery({
         <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2">
           {screenshots.map((shot, i) => (
             <Reveal key={shot.caption} delay={i * 0.08}>
-              <ScreenshotFrame src={shot.src} alt={shot.alt} />
+              <ScreenshotFrame
+                src={shot.src}
+                alt={shot.alt}
+                onClick={() => setIndex(i)}
+              />
               <p className="mt-3 font-mono-eyebrow text-xs uppercase tracking-wider text-ink-soft">
                 {shot.caption}
               </p>
@@ -33,6 +44,8 @@ export function AppScreenshotGallery({
           ))}
         </div>
       </Container>
+
+      <Lightbox images={screenshots} index={index} onClose={() => setIndex(null)} onNavigate={setIndex} />
     </section>
   );
 }

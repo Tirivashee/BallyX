@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -6,9 +9,17 @@ import { ScreenshotFrame } from "@/components/sections/screenshot-frame";
 import { Reveal } from "@/components/motion/reveal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Lightbox } from "@/components/ui/lightbox";
 import { pluto } from "@/lib/site-config";
 
+const shot = {
+  src: "/images/screenshots/checkout.png",
+  alt: "Screenshot of the Pluto point-of-sale checkout screen",
+};
+
 export function PlutoFlagship() {
+  const [open, setOpen] = useState(false);
+
   return (
     <section id="pluto" className="border-b border-ink/10 py-24 md:py-32">
       <Container>
@@ -23,9 +34,10 @@ export function PlutoFlagship() {
             </p>
             <div className="mt-8">
               <ScreenshotFrame
-                src="/images/screenshots/pos-checkout.svg"
-                alt="Placeholder screenshot of the Pluto point-of-sale checkout screen"
+                src={shot.src}
+                alt={shot.alt}
                 priority
+                onClick={() => setOpen(true)}
               />
             </div>
             <div className="mt-8">
@@ -55,6 +67,13 @@ export function PlutoFlagship() {
           </div>
         </div>
       </Container>
+
+      <Lightbox
+        images={[shot]}
+        index={open ? 0 : null}
+        onClose={() => setOpen(false)}
+        onNavigate={() => {}}
+      />
     </section>
   );
 }

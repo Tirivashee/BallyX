@@ -1,16 +1,29 @@
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Expand } from "lucide-react";
 
 import { Reveal } from "@/components/motion/reveal";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Project } from "@/lib/projects";
 
-export function ProjectCard({ project, delay = 0 }: { project: Project; delay?: number }) {
+export function ProjectCard({
+  project,
+  delay = 0,
+  onImageClick,
+}: {
+  project: Project;
+  delay?: number;
+  onImageClick?: () => void;
+}) {
   return (
     <Reveal delay={delay}>
       <Card className="h-full overflow-hidden">
-        <div className="relative aspect-[16/10] w-full border-b border-ink/10 bg-paper">
+        <button
+          type="button"
+          onClick={onImageClick}
+          aria-label={`Expand: ${project.name} preview`}
+          className="group relative aspect-video w-full cursor-zoom-in border-b border-ink/10 bg-paper-dim"
+        >
           <Image
             src={project.image}
             alt={`${project.name} preview`}
@@ -19,7 +32,12 @@ export function ProjectCard({ project, delay = 0 }: { project: Project; delay?: 
             className="object-cover"
             sizes="(min-width: 640px) 50vw, 100vw"
           />
-        </div>
+          <div className="absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-all group-hover:bg-ink/20 group-hover:opacity-100">
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-paper/90 text-ink">
+              <Expand className="h-5 w-5" />
+            </span>
+          </div>
+        </button>
         <CardHeader>
           <div className="flex items-start justify-between gap-4">
             <CardTitle>{project.name}</CardTitle>
