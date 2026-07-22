@@ -91,6 +91,12 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* older Edge/IE */
+}
+
+html::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and other WebKit browsers */
 }
 
 body {

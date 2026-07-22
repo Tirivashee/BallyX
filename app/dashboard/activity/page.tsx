@@ -1,7 +1,12 @@
 import { BrandName } from "@/components/ui/brand-name";
-import { mockActivity } from "@/lib/dashboard-mock";
+import { getActivity } from "@/lib/dashboard-data";
 
-export default function DashboardActivityPage() {
+// Reads live Postgres data on every request — must not be statically
+// prerendered at build time (see README "Database" section).
+export const dynamic = "force-dynamic";
+
+export default async function DashboardActivityPage() {
+  const activity = await getActivity();
   return (
     <div className="space-y-6">
       <div>
@@ -14,7 +19,7 @@ export default function DashboardActivityPage() {
       </div>
 
       <ol className="space-y-6 border-l border-ink/10 pl-6">
-        {mockActivity.map((entry) => (
+        {activity.map((entry) => (
           <li key={entry.id} className="relative">
             <span className="absolute -left-[29px] top-1 h-2.5 w-2.5 rounded-full bg-teal" />
             <p className="text-xs text-ink-soft">

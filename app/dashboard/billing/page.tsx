@@ -1,17 +1,17 @@
-"use client";
-
-import { useState } from "react";
-
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { mockInvoices } from "@/lib/dashboard-mock";
+import { AutoPayToggle } from "@/components/dashboard/autopay-toggle";
+import { getInvoices } from "@/lib/dashboard-data";
 import { hosting } from "@/lib/site-config";
 
 const currentPlan = hosting.plans.find((p) => p.id === "standard")!;
 
-export default function DashboardBillingPage() {
-  const [autoPay, setAutoPay] = useState(true);
+// Reads live Postgres data on every request — must not be statically
+// prerendered at build time (see README "Database" section).
+export const dynamic = "force-dynamic";
+
+export default async function DashboardBillingPage() {
+  const invoices = await getInvoices();
 
   return (
     <div className="space-y-8">
@@ -50,11 +50,7 @@ export default function DashboardBillingPage() {
                 Automatically charge this card each billing cycle.
               </p>
             </div>
-            <Switch
-              checked={autoPay}
-              onCheckedChange={setAutoPay}
-              aria-label="Auto-pay"
-            />
+            <AutoPayToggle />
           </div>
         </Card>
       </div>
@@ -75,7 +71,7 @@ export default function DashboardBillingPage() {
               </tr>
             </thead>
             <tbody>
-              {mockInvoices.map((invoice) => (
+              {invoices.map((invoice) => (
                 <tr key={invoice.id} className="border-b border-ink/10 last:border-b-0">
                   <td className="px-4 py-3 font-mono text-xs text-ink">
                     {invoice.id}

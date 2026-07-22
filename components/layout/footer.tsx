@@ -48,7 +48,7 @@ export function Footer() {
             </p>
           </div>
 
-          <FooterColumn title="Product" links={footerLinks.product} />
+          <FooterColumn title="Pluto" links={footerLinks.product} />
           <FooterColumn title="Services" links={footerLinks.services} />
           <FooterColumn title="Company" links={footerLinks.company} />
         </div>

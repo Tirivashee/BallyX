@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Download } from "lucide-react";
+import { ArrowRight, Cloud, Download } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import type { DownloadApp } from "@/lib/downloads";
 
 export function AppHero({ app }: { app: DownloadApp }) {
+  const isCloud = app.deliveryType === "cloud";
+
   return (
     <section className="border-b border-ink/10 py-20 md:py-28">
       <Container>
@@ -63,22 +65,35 @@ export function AppHero({ app }: { app: DownloadApp }) {
           </div>
           <div>
             <dt className="font-mono-eyebrow text-xs uppercase tracking-wider text-ink-soft/70">
-              File size
+              {isCloud ? "Access" : "File size"}
             </dt>
-            <dd className="mt-1 font-medium text-ink">{app.fileSize}</dd>
+            <dd className="mt-1 font-medium text-ink">
+              {isCloud ? app.access : app.fileSize}
+            </dd>
           </div>
         </dl>
 
         {app.downloadReady && app.downloadUrl ? (
           <Button asChild size="lg" className="mt-8">
-            <a href={app.downloadUrl} download>
-              <Download className="h-4 w-4" />
-              Download for {app.platforms[0]}
+            <a
+              href={app.downloadUrl}
+              {...(isCloud ? {} : { download: true })}
+            >
+              {isCloud ? (
+                <ArrowRight className="h-4 w-4" />
+              ) : (
+                <Download className="h-4 w-4" />
+              )}
+              {isCloud ? "Get started" : `Download for ${app.platforms[0]}`}
             </a>
           </Button>
         ) : (
           <Button size="lg" className="mt-8" disabled>
-            <Download className="h-4 w-4" />
+            {isCloud ? (
+              <Cloud className="h-4 w-4" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
             Coming soon
           </Button>
         )}

@@ -27,7 +27,7 @@ export function HostingHero() {
             </Link>
           </Button>
           <Button asChild variant="outline" size="lg">
-            <Link href="/dashboard/login">Preview the client dashboard</Link>
+            <Link href="/login">Preview the client dashboard</Link>
           </Button>
         </div>
       </Container>

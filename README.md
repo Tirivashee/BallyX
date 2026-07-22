@@ -99,6 +99,37 @@ server action in [`lib/actions/contact.ts`](lib/actions/contact.ts).
 - There's a `TODO(rate-limiting)` comment in `contact.ts` marking where to
   add IP/session-based rate limiting before this goes live for real.
 
+### Database
+
+Postgres, via `pg` — connection pool in [`lib/db.ts`](lib/db.ts), configured
+with `PGHOST`/`PGPORT`/`PGUSER`/`PGPASSWORD`/`PGDATABASE` (see
+`.env.example`). Schema in [`db/schema.sql`](db/schema.sql).
+
+- `npm run db:migrate` — creates/updates tables (idempotent, safe to re-run).
+- `npm run db:seed` — (re)populates the dashboard demo tables from
+  [`db/seed.sql`](db/seed.sql). Truncates and reinserts, so it's meant for
+  the illustrative dashboard data only — never run it against real
+  `contact_submissions` or `invoice_tool_invoices` rows.
+
+What's backed by it:
+- **Contact form** — every validated, non-honeypot submission is also
+  inserted into `contact_submissions` (in addition to the email
+  notification / console log). A DB failure here is logged but doesn't
+  fail the user's submission.
+- **Invoice tool** (`/tools/invoice`) — every generated PDF is saved to
+  `invoice_tool_invoices` / `invoice_tool_items`. Note this changes the
+  tool's original "no persistence" design (see
+  `tools/ballyx-invoice-tool/README.md`, which still describes the
+  stateless, redistributable version — that copy is untouched).
+- **Hosting dashboard** (`/dashboard`) — sites, domains, DNS records,
+  backups, activity, billing invoices, and support tickets all read from
+  `lib/dashboard-data.ts` instead of the old `lib/dashboard-mock.ts`. It's
+  still one shared demo dataset, not per-account data — see the TODO
+  below on dashboard auth. Interactive demo actions that were always
+  explicitly ephemeral (domain toggles, "create backup", "submit ticket",
+  settings form) still only update client-side state and are not written
+  back to Postgres.
+
 ### Security
 
 - Security headers + a CSP are set in [`next.config.ts`](next.config.ts):
@@ -168,15 +199,19 @@ this list also covers placeholders that aren't literally bracketed
       is intentionally not a live registrar lookup — it routes to
       `/contact` with the domain prefilled, don't wire it to a fake
       "availability" result
-- [ ] `/dashboard/*` is a front-end-only preview: fake local-storage
-      "auth" (`lib/dashboard-auth.ts`) and mock data
-      (`lib/dashboard-mock.ts` — sites, domains, DNS records, invoices,
-      backups, activity, support tickets), not connected to any real
-      infrastructure or backend. It's excluded from the sitemap and
-      disallowed in `robots.ts`. Replace with real auth + data before
-      promoting this beyond a demo, and update the "Demo preview"
-      badges/copy once it's real.
-- [ ] `mockInvoices[].amount` — currently `{{INVOICE_AMOUNT}}` placeholders
+- [ ] `/dashboard/*` and `/tools/invoice/*` are gated by a single shared
+      admin session (`lib/auth/session.ts` + `middleware.ts`,
+      `ADMIN_USERNAME`/`ADMIN_PASSWORD_HASH`/`SESSION_SECRET` in
+      `.env.local`), not real per-account/customer auth. Dashboard data
+      (sites, domains, DNS records, invoices, backups, activity, support
+      tickets) comes from Postgres via `lib/dashboard-data.ts`, but it's
+      still one shared illustrative dataset, not per-customer data, and
+      none of it is connected to real infrastructure. It's excluded from
+      the sitemap and disallowed in `robots.ts`. Give `dashboard_*` tables
+      a real account/customer relationship before promoting this beyond
+      a demo, and update the "Demo preview" badges/copy once it's real.
+- [ ] `dashboard_invoices.amount` (seeded in `db/seed.sql`) — currently
+      `{{INVOICE_AMOUNT}}` placeholders
 
 **Downloads (`lib/downloads.ts`)**
 - [ ] Every app's `version`, `releaseDate`, and `fileSize` are

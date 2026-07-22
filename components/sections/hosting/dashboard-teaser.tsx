@@ -30,7 +30,7 @@ export function DashboardTeaser() {
             infrastructure data.
           </p>
           <Button asChild className="mt-8" size="lg">
-            <Link href="/dashboard/login">
+            <Link href="/login">
               Open the preview
               <ArrowRight className="h-4 w-4" />
             </Link>

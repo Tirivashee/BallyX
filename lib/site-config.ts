@@ -50,7 +50,7 @@ export const brand = {
 } as const;
 
 export const nav = [
-  { label: "Product", href: "/product" },
+  { label: "Pluto", href: "/product" },
   { label: "Services", href: "/services" },
   { label: "Downloads", href: "/downloads" },
   { label: "Projects", href: "/projects" },

@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { query } from "@/lib/db";
 
 /**
  * All input is validated here, server-side, regardless of what the client
@@ -67,6 +68,18 @@ export async function submitContactForm(
   // but never actually process or forward the submission.
   if (website) {
     return { status: "success" };
+  }
+
+  try {
+    await query(
+      `INSERT INTO contact_submissions (name, email, company, message)
+       VALUES ($1, $2, $3, $4)`,
+      [name, email, company || null, message],
+    );
+  } catch (error) {
+    // Don't fail the whole submission just because the DB log didn't
+    // write — the email notification below is the primary delivery path.
+    console.error("Failed to save contact submission to the database:", error);
   }
 
   const notifyEmail = process.env.CONTACT_NOTIFY_EMAIL;

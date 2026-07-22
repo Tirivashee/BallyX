@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { Boxes, Calculator, TrendingUp, type LucideIcon } from "lucide-react";
+import {
+  Boxes,
+  Calculator,
+  DollarSign,
+  Lock,
+  ShieldCheck,
+  TrendingUp,
+  type LucideIcon,
+} from "lucide-react";
 
 import { AppHero } from "@/components/sections/downloads/app-hero";
 import { AppScreenshotGallery } from "@/components/sections/downloads/app-screenshot-gallery";
@@ -15,6 +23,7 @@ import { downloads } from "@/lib/downloads";
 // Add an entry here if another app grows a `differentiators` list.
 const differentiatorIcons: Record<string, LucideIcon[]> = {
   mars: [Boxes, Calculator, TrendingUp],
+  venus: [ShieldCheck, DollarSign, Lock],
 };
 
 export async function generateMetadata({

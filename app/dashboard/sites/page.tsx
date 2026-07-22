@@ -1,7 +1,12 @@
 import { Badge } from "@/components/ui/badge";
-import { mockSites } from "@/lib/dashboard-mock";
+import { getSites } from "@/lib/dashboard-data";
 
-export default function DashboardSitesPage() {
+// Reads live Postgres data on every request — must not be statically
+// prerendered at build time (see README "Database" section).
+export const dynamic = "force-dynamic";
+
+export default async function DashboardSitesPage() {
+  const sites = await getSites();
   return (
     <div className="space-y-6">
       <div>
@@ -26,7 +31,7 @@ export default function DashboardSitesPage() {
             </tr>
           </thead>
           <tbody>
-            {mockSites.map((site) => (
+            {sites.map((site) => (
               <tr key={site.id} className="border-b border-ink/10 last:border-b-0">
                 <td className="px-4 py-3 font-medium text-ink">{site.name}</td>
                 <td className="px-4 py-3 text-ink-soft">{site.domain}</td>

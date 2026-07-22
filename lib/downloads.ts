@@ -27,7 +27,17 @@ export type DownloadApp = {
   version: string;
   releaseDate: string;
   platforms: string[];
-  fileSize: string;
+  /**
+   * "desktop" apps (Pluto, Mars) ship an installer — the card/hero show a
+   * file size and a "Download for {platform}" button. "cloud" apps (Venus)
+   * are browser-based SaaS — there's no file to download, so the card shows
+   * `access` instead of `fileSize` and the CTA reads "Coming soon" without
+   * implying a file transfer. Defaults to "desktop" when omitted.
+   */
+  deliveryType?: "desktop" | "cloud";
+  fileSize?: string;
+  /** Cloud-only: shown in place of `fileSize`, e.g. "Web browser — no install". */
+  access?: string;
   downloadReady: boolean;
   downloadUrl?: string;
   detailHref: string;
@@ -177,12 +187,15 @@ export const downloads: DownloadApp[] = [
     id: "venus",
     name: "Venus",
     icon: "/images/app-icons/venus.png",
-    tagline: "{{VENUS_TAGLINE}}",
-    description: "{{VENUS_DESCRIPTION}}",
-    version: "1.0.0",
-    releaseDate: "24 October 2026",
-    platforms: ["windows 10/11"],
-    fileSize: "4.5 MB",
+    tagline:
+      "Cloud payroll for Zimbabwean SMEs, and the bookkeepers who run it for them.",
+    description:
+      "Venus computes gross-to-net payroll for salaries split across USD and ZWG, then generates payslips and the ZIMRA/NSSA statutory remittance paperwork that comes with running payroll in Zimbabwe.",
+    version: "0.1.0", // pre-release — not yet built/packaged
+    releaseDate: "TBC", // no confirmed launch date yet
+    platforms: ["Web browser"],
+    deliveryType: "cloud",
+    access: "Cloud — sign in from any browser, nothing to install",
     downloadReady: false,
     detailHref: "/downloads/venus",
     screenshots: [
@@ -195,6 +208,99 @@ export const downloads: DownloadApp[] = [
         src: "/images/screenshots/venus-detail.svg",
         alt: "Placeholder screenshot of a Venus detail view",
         caption: "Detail view",
+      },
+    ],
+    differentiators: [
+      {
+        id: "verified-compliance",
+        eyebrow: "01 — COMPLIANCE",
+        title: "Tax rules that admit what they don't know yet",
+        summary:
+          "PAYE tax bands, NSSA rates, and the AIDS levy are versioned by effective date and start life UNVERIFIED — flagged with an amber banner, a stricter finalize-confirmation step, and watermarked PDFs until an Owner or Payroll Admin marks the rule VERIFIED against a cited source.",
+        detail:
+          "Payroll software that silently trusts a tax table is how businesses end up under- or over-remitting to ZIMRA and NSSA. Venus makes the confidence level of every statutory rule visible instead of assuming it's correct by default.",
+      },
+      {
+        id: "dual-currency-payroll",
+        eyebrow: "02 — CURRENCY",
+        title: "USD and ZWG payroll, computed correctly from day one",
+        summary:
+          "Gross-to-net computation handles salaries split across USD and ZWG the way Zimbabwean employers actually pay them, not bolted on as an afterthought.",
+        detail:
+          "Payslips and statutory paperwork reflect exactly how a salary is split between the two currencies. Venus doesn't attempt automatic FX conversion between them in v1 — currencies are computed and reported as entered.",
+      },
+      {
+        id: "immutable-pay-runs",
+        eyebrow: "03 — TRUST",
+        title: "A finalized pay run that can't quietly be edited",
+        summary:
+          "Once a pay run is finalized, it's locked — enforced by database triggers, not just an app-level rule a bug or workaround could bypass.",
+        detail:
+          "Payroll history is a compliance record, not a draft. Finalizing a run closes it permanently at the database level, so what was paid and remitted stays exactly as it was reported.",
+      },
+    ],
+    features: [
+      {
+        title: "Gross-to-net payroll",
+        description:
+          "Full computation for salaries split between USD and ZWG, ready to feed straight into payslips.",
+      },
+      {
+        title: "Payslip generation",
+        description:
+          "Clean, printable PDF payslips for every employee in a pay run, built with @react-pdf/renderer.",
+      },
+      {
+        title: "ZIMRA & NSSA remittance paperwork",
+        description:
+          "Generates the statutory documents needed to remit PAYE, NSSA, and the AIDS levy, in the format authorities expect.",
+      },
+      {
+        title: "Versioned, verifiable compliance rules",
+        description:
+          "PAYE bands, NSSA rates, and the AIDS levy are tracked by effective date and require a named Owner or Payroll Admin to mark them VERIFIED before they're trusted.",
+      },
+      {
+        title: "Organizations, companies & employees",
+        description:
+          "A domain model built for bookkeepers running payroll across multiple client companies from one place.",
+      },
+      {
+        title: "Audit log",
+        description:
+          "Every pay run and rule change is recorded, so there's a clear record of who did what and when.",
+      },
+    ],
+    faq: [
+      {
+        question: "Is Venus available now?",
+        answer:
+          "Not yet. Venus is in early development with no confirmed launch date — the sign-up button will switch on once that changes.",
+      },
+      {
+        question: "Does Venus handle leave, timesheets, or pro-rata pay?",
+        answer:
+          "Not in v1. Venus's first version is focused on gross-to-net computation, payslips, and statutory paperwork — leave/timesheets, pro-rata pay, and employee self-service are explicitly out of scope for now.",
+      },
+      {
+        question: "Can employees view their own payslips in Venus?",
+        answer:
+          "Not in v1 — there's no employee self-service portal yet, and payslip delivery by email or WhatsApp isn't built in. Payslips are generated for the payroll admin to distribute.",
+      },
+      {
+        question: "What happens once a pay run is finalized?",
+        answer:
+          "It's locked. Finalized pay runs are immutable — enforced by database triggers, not just app-level rules — so a completed run can't be quietly edited afterward.",
+      },
+      {
+        question: "Does Venus convert between USD and ZWG automatically?",
+        answer:
+          "No. Multi-currency FX conversion is explicitly out of scope for v1 — salaries are computed and reported in the currency split they're entered in.",
+      },
+      {
+        question: "Is Venus related to Pluto?",
+        answer:
+          "They're sibling products in the BallyX suite and share the same design lineage, but they're unrelated tools — Pluto is a point-of-sale system, Venus is a payroll platform. There's no shared data between them.",
       },
     ],
   },

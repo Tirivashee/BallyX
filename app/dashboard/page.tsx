@@ -5,15 +5,25 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BrandName } from "@/components/ui/brand-name";
 import {
-  mockStats,
-  mockSites,
-  mockActivity,
-  mockInvoices,
-} from "@/lib/dashboard-mock";
+  getStats,
+  getSites,
+  getActivity,
+  getInvoices,
+} from "@/lib/dashboard-data";
 
-const nextInvoice = mockInvoices.find((invoice) => invoice.status === "Due");
+// Reads live Postgres data on every request — must not be statically
+// prerendered at build time (see README "Database" section).
+export const dynamic = "force-dynamic";
 
-export default function DashboardOverviewPage() {
+export default async function DashboardOverviewPage() {
+  const [stats, sites, activity, invoices] = await Promise.all([
+    getStats(),
+    getSites(),
+    getActivity(),
+    getInvoices(),
+  ]);
+  const nextInvoice = invoices.find((invoice) => invoice.status === "Due");
+
   return (
     <div className="space-y-10">
       <div>
@@ -26,7 +36,7 @@ export default function DashboardOverviewPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {mockStats.map((stat) => (
+        {stats.map((stat) => (
           <Card key={stat.label} className="p-5">
             <p className="font-mono-eyebrow text-xs uppercase tracking-wider text-ink-soft/70">
               {stat.label}
@@ -52,7 +62,7 @@ export default function DashboardOverviewPage() {
           </Link>
         </div>
         <div className="mt-4 space-y-3">
-          {mockSites.slice(0, 3).map((site) => (
+          {sites.slice(0, 3).map((site) => (
             <div
               key={site.id}
               className="flex flex-col gap-2 rounded-lg border border-ink/10 bg-paper-soft p-4 sm:flex-row sm:items-center sm:justify-between"
@@ -89,7 +99,7 @@ export default function DashboardOverviewPage() {
             </Link>
           </div>
           <div className="mt-4 space-y-4 rounded-lg border border-ink/10 bg-paper-soft p-4">
-            {mockActivity.slice(0, 3).map((entry) => (
+            {activity.slice(0, 3).map((entry) => (
               <div key={entry.id}>
                 <p className="text-xs text-ink-soft">
                   {entry.timestamp} · <BrandName text={entry.actor} />

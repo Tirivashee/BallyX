@@ -2,8 +2,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-import { mockDomains, mockDnsRecords } from "@/lib/dashboard-mock";
+import { getDomain, getDnsRecords } from "@/lib/dashboard-data";
 import { DomainManager } from "@/components/dashboard/domain-manager";
+
+// Reads live Postgres data on every request — must not be statically
+// prerendered at build time (see README "Database" section).
+export const dynamic = "force-dynamic";
 
 export default async function DashboardDomainDetailPage({
   params,
@@ -12,11 +16,13 @@ export default async function DashboardDomainDetailPage({
 }) {
   const { domain: domainParam } = await params;
   const domain = decodeURIComponent(domainParam);
-  const domainData = mockDomains.find((d) => d.domain === domain);
+  const domainData = await getDomain(domain);
 
   if (!domainData) {
     notFound();
   }
+
+  const records = await getDnsRecords(domain);
 
   return (
     <div className="space-y-6">
@@ -28,10 +34,7 @@ export default async function DashboardDomainDetailPage({
         Back to Domains
       </Link>
 
-      <DomainManager
-        domain={domainData}
-        initialRecords={mockDnsRecords[domain] ?? []}
-      />
+      <DomainManager domain={domainData} initialRecords={records} />
     </div>
   );
 }

@@ -11,9 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { BrandName } from "@/components/ui/brand-name";
 import { cn } from "@/lib/utils";
-import type { MockDnsRecord, MockDomain } from "@/lib/dashboard-mock";
+import type { DnsRecord, Domain } from "@/lib/dashboard-data";
 
-const recordTypes: MockDnsRecord["type"][] = ["A", "CNAME", "MX", "TXT", "NS"];
+const recordTypes: DnsRecord["type"][] = ["A", "CNAME", "MX", "TXT", "NS"];
 
 const selectClassName =
   "flex h-11 w-full rounded-md border border-ink/20 bg-paper-soft px-3 py-2 text-sm text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent";
@@ -22,17 +22,17 @@ export function DomainManager({
   domain,
   initialRecords,
 }: {
-  domain: MockDomain;
-  initialRecords: MockDnsRecord[];
+  domain: Domain;
+  initialRecords: DnsRecord[];
 }) {
   const [autoRenew, setAutoRenew] = useState(domain.autoRenew);
   const [privacyProtection, setPrivacyProtection] = useState(
     domain.privacyProtection,
   );
   const [locked, setLocked] = useState(domain.locked);
-  const [records, setRecords] = useState<MockDnsRecord[]>(initialRecords);
+  const [records, setRecords] = useState<DnsRecord[]>(initialRecords);
 
-  const [newType, setNewType] = useState<MockDnsRecord["type"]>("A");
+  const [newType, setNewType] = useState<DnsRecord["type"]>("A");
   const [newName, setNewName] = useState("");
   const [newValue, setNewValue] = useState("");
   const [newTtl, setNewTtl] = useState("3600");
@@ -252,7 +252,7 @@ export function DomainManager({
             <select
               id="record-type"
               value={newType}
-              onChange={(e) => setNewType(e.target.value as MockDnsRecord["type"])}
+              onChange={(e) => setNewType(e.target.value as DnsRecord["type"])}
               className={cn(selectClassName)}
             >
               {recordTypes.map((type) => (
