@@ -368,18 +368,6 @@ export const hosting = {
     },
   ] as const,
 
-  /**
-   * Indicative TLD pricing shown next to the domain-interest form. Every
-   * price is a placeholder — replace with real figures before launch,
-   * and don't imply this is a live registrar lookup (it isn't).
-   */
-  domainPricing: [
-    { tld: ".com", price: "$7.99" },
-    { tld: ".co.zw", price: "$2.99" },
-    { tld: ".africa", price: "$9.99" },
-    { tld: ".online", price: "$12.99" },
-  ] as const,
-
   faq: [
     {
       question: "Is BallyX Hosting available now?",

@@ -246,11 +246,6 @@ this list also covers placeholders that aren't literally bracketed
 - [ ] `hosting.plans[].price` — real prices for Starter/Standard/Pro once set
 - [ ] `hosting.guarantees` — real uptime SLA % and money-back policy
       (currently `{{HOSTING_UPTIME_SLA}}` / `{{HOSTING_MONEY_BACK_POLICY}}`)
-- [ ] `hosting.domainPricing` — real indicative TLD prices (currently all
-      `{{DOMAIN_PRICE_*}}` placeholders); the domain form on `/hosting`
-      is intentionally not a live registrar lookup — it routes to
-      `/contact` with the domain prefilled, don't wire it to a fake
-      "availability" result
 - [ ] `/dashboard/*` and `/tools/invoice/*` are gated by a single shared
       admin session (`lib/auth/session.ts` + `middleware.ts`,
       `ADMIN_USERNAME`/`ADMIN_PASSWORD_HASH`/`SESSION_SECRET` in

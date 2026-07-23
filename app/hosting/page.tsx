@@ -4,9 +4,7 @@ import { HostingHero } from "@/components/sections/hosting/hosting-hero";
 import { HostingFeatures } from "@/components/sections/hosting/hosting-features";
 import { HowItWorks } from "@/components/sections/hosting/how-it-works";
 import { HostingPlans } from "@/components/sections/hosting/hosting-plans";
-import { DomainSearch } from "@/components/sections/hosting/domain-search";
 import { HostingGuarantees } from "@/components/sections/hosting/hosting-guarantees";
-import { DashboardTeaser } from "@/components/sections/hosting/dashboard-teaser";
 import { HostingPricing } from "@/components/sections/hosting/hosting-pricing";
 import { HostingFaq } from "@/components/sections/hosting/hosting-faq";
 import { ClosingCTA } from "@/components/sections/home/closing-cta";
@@ -25,9 +23,7 @@ export default function HostingPage() {
       <HostingFeatures />
       <HowItWorks />
       <HostingPlans />
-      <DomainSearch />
       <HostingGuarantees />
-      <DashboardTeaser />
       <HostingPricing />
       <HostingFaq />
       <ClosingCTA />
