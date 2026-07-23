@@ -544,3 +544,53 @@ export const contact = {
   subhead:
     "Whether it's Pluto for your shop or a custom system for your business, the fastest way to reach us is WhatsApp.",
 } as const;
+
+/**
+ * Email/password signup + sign-in, separate from the single shared admin
+ * login. Creating and confirming an account does not grant access to
+ * /dashboard or /tools/invoice — those stay admin-only. See
+ * lib/auth/session.ts and middleware.ts.
+ */
+export const auth = {
+  signup: {
+    heading: "Create an account",
+    subhead: "Sign up with your email and a password.",
+    emailLabel: "Email",
+    passwordLabel: "Password",
+    submitLabel: "Create account",
+    submitPendingLabel: "Creating account…",
+    // Shown for every non-validation outcome (new account, existing
+    // account, or rate-limited) — deliberately identical for all three.
+    neutralMessage:
+      "If that email address is available, we've sent a confirmation link to it. Check your inbox to finish creating your account.",
+    genericError: "Something went wrong. Please try again.",
+    signinLinkLabel: "Already have an account? Sign in",
+  },
+  signin: {
+    heading: "Sign in",
+    subhead: "Sign in to your BallyX account.",
+    emailLabel: "Email",
+    passwordLabel: "Password",
+    submitLabel: "Sign in",
+    submitPendingLabel: "Signing in…",
+    confirmedBanner: "Your email is confirmed — sign in below.",
+    errorInvalidCredentials: "Incorrect email or password.",
+    errorUnverified: "Please confirm your email address before signing in.",
+    errorRateLimited: "Too many attempts. Please try again later.",
+    signupLinkLabel: "Don't have an account? Create one",
+    adminLinkLabel: "Site admin? Sign in here",
+  },
+  confirm: {
+    heading: "Confirm your email",
+    subhead: "Click the button below to confirm your email address.",
+    submitLabel: "Confirm email",
+    submitPendingLabel: "Confirming…",
+    invalidHeading: "This link is invalid or has expired",
+    invalidMessage:
+      "Request a new confirmation link by signing up again with the same email address.",
+  },
+  email: {
+    confirmSubject: "Confirm your BallyX account",
+    existingAccountSubject: "Someone tried to sign up with your email",
+  },
+} as const;

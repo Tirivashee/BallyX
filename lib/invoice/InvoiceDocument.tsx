@@ -47,8 +47,13 @@ const s = StyleSheet.create({
     fontFamily: "Helvetica-Bold",
     letterSpacing: 4,
     color: THEME.ink,
+    // Fixed height + lineHeight sidestep a react-pdf bug where bold text
+    // with letterSpacing gets measured with ~0 box height, which used to
+    // make invNo below render on top of/overlapping this title.
+    lineHeight: 1,
+    height: 32,
   },
-  invNo: { marginTop: 8, fontSize: 10, color: THEME.muted, letterSpacing: 1 },
+  invNo: { marginTop: 10, fontSize: 10, color: THEME.muted, letterSpacing: 1 },
 
   meta: { flexDirection: "row", marginTop: 20 },
   metaBlock: { flex: 1, paddingRight: 18 },

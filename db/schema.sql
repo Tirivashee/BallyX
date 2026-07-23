@@ -172,3 +172,46 @@ CREATE TABLE IF NOT EXISTS dashboard_ticket_messages (
 
 CREATE INDEX IF NOT EXISTS idx_dashboard_ticket_messages_ticket_id
   ON dashboard_ticket_messages(ticket_id);
+
+-- ---------------------------------------------------------------------
+-- Email/password accounts (signup/signin/confirm) — separate from the
+-- single shared admin account in ADMIN_USERNAME/ADMIN_PASSWORD_HASH.
+-- A confirmed user session is NOT admin: middleware.ts still requires
+-- sub = 'admin' for /dashboard and /tools/invoice, so this table is
+-- currently just the auth mechanism, not a source of new access.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE CHECK (email = lower(email)),
+  password_hash TEXT NOT NULL,
+  email_verified_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  -- TODO(licensing): a `licenses` table will reference users(id) once
+  -- Pluto licensing is wired up.
+);
+
+-- Raw tokens exist only in the confirmation email; only their sha256
+-- hash is ever stored, as a bytea so lookups hit the primary key index
+-- directly rather than a string compare.
+CREATE TABLE IF NOT EXISTS email_verification_tokens (
+  token_hash BYTEA PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  expires_at TIMESTAMPTZ NOT NULL,
+  consumed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_email_verification_tokens_user_id
+  ON email_verification_tokens(user_id);
+
+-- Fixed-window rate limiting for signup/signin/confirm, keyed by e.g.
+-- 'signup:ip:1.2.3.4' or 'signup:email:someone@example.com'. Updated via
+-- a single atomic UPSERT (see lib/auth/rate-limit.ts) so concurrent
+-- requests can't race past a read-then-increment.
+-- TODO(cleanup): rows are never evicted. Fine at this site's scale; add
+-- a periodic delete of old window_start rows if this table grows large.
+CREATE TABLE IF NOT EXISTS rate_limits (
+  bucket_key TEXT PRIMARY KEY,
+  window_start TIMESTAMPTZ NOT NULL,
+  count INTEGER NOT NULL DEFAULT 0
+);

@@ -20,22 +20,31 @@ import type { NextConfig } from "next";
  *   - The WhatsApp CTA is a plain <a href="https://wa.me/...">, not a
  *     fetch, so it isn't governed by connect-src at all.
  */
-const ContentSecurityPolicy = `
-  default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval';
-  style-src 'self' 'unsafe-inline';
-  img-src 'self' data:;
-  font-src 'self' data:;
-  connect-src 'self';
-  frame-ancestors 'none';
-  base-uri 'self';
-  form-action 'self';
-`
-  .replace(/\s{2,}/g, " ")
-  .trim();
+function buildCsp(scriptSrc: string): string {
+  return `
+    default-src 'self';
+    script-src ${scriptSrc};
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data:;
+    font-src 'self' data:;
+    connect-src 'self';
+    frame-ancestors 'none';
+    base-uri 'self';
+    form-action 'self';
+  `
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
 
-const securityHeaders = [
-  { key: "Content-Security-Policy", value: ContentSecurityPolicy },
+const ContentSecurityPolicy = buildCsp("'self' 'unsafe-inline' 'unsafe-eval'");
+
+// The signup/signin/confirm pages have no Framer Motion scroll-reveal
+// animations, so they don't need 'unsafe-eval' — and since they collect
+// credentials, a stricter CSP is worth the extra header block. An XSS
+// there would otherwise reach a password field.
+const AuthContentSecurityPolicy = buildCsp("'self' 'unsafe-inline'");
+
+const baseHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -46,11 +55,31 @@ const securityHeaders = [
   },
 ];
 
+const securityHeaders = [
+  { key: "Content-Security-Policy", value: ContentSecurityPolicy },
+  ...baseHeaders,
+];
+
+const authSecurityHeaders = [
+  { key: "Content-Security-Policy", value: AuthContentSecurityPolicy },
+  ...baseHeaders,
+];
+
 const nextConfig: NextConfig = {
   async headers() {
     return [
+      // Auth routes get their own headers block with a distinct `source`
+      // pattern rather than a second overlapping entry after the
+      // catch-all below — that way exactly one entry ever matches a
+      // given path, so there's no same-key header-merge precedence to
+      // rely on (verified: `curl -I` on /signup shows no 'unsafe-eval'
+      // while / still has it).
       {
-        source: "/:path*",
+        source: "/(signup|signin|auth/confirm)",
+        headers: authSecurityHeaders,
+      },
+      {
+        source: "/:path((?!signup$|signin$|auth/confirm$).*)",
         headers: securityHeaders,
       },
     ];

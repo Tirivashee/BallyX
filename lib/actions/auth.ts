@@ -3,24 +3,24 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { safeNextPath } from "@/lib/auth/next-path";
 import { verifyPassword } from "@/lib/auth/password";
-import { createSessionToken, sessionCookieOptions, SESSION_COOKIE } from "@/lib/auth/session";
+import {
+  createSessionToken,
+  getSessionSubject,
+  sessionCookieOptions,
+  SESSION_COOKIE,
+} from "@/lib/auth/session";
 
 export type LoginState = {
   status: "idle" | "error";
   message?: string;
 };
 
-function safeNextPath(raw: FormDataEntryValue | null): string {
-  const value = typeof raw === "string" ? raw : "";
-  // Only allow same-app relative paths — never redirect off-site.
-  return value.startsWith("/") && !value.startsWith("//") ? value : "/dashboard";
-}
-
 export async function login(_prevState: LoginState, formData: FormData): Promise<LoginState> {
   const username = String(formData.get("username") ?? "");
   const password = String(formData.get("password") ?? "");
-  const next = safeNextPath(formData.get("next"));
+  const next = safeNextPath(formData.get("next"), "/dashboard");
 
   const adminUsername = process.env.ADMIN_USERNAME;
   const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH;
@@ -51,6 +51,7 @@ export async function login(_prevState: LoginState, formData: FormData): Promise
 
 export async function logout(): Promise<void> {
   const jar = await cookies();
+  const subject = await getSessionSubject(jar.get(SESSION_COOKIE)?.value);
   jar.delete(SESSION_COOKIE);
-  redirect("/login");
+  redirect(subject?.sub === "user" ? "/signin" : "/login");
 }

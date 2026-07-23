@@ -3,16 +3,25 @@
 // only uses Web Crypto (`crypto.subtle`), never Node's `crypto` module.
 //
 // Format: `${base64url(payload json)}.${base64url(hmac-sha256 signature)}`
-// The payload just proves "this request holds a cookie signed with our
-// secret" — there's a single admin account, so there's no user id to carry.
+// The payload proves "this request holds a cookie signed with our
+// secret" for one of two identities that share this cookie: the single
+// shared admin account, or a real signed-up-and-confirmed user (`uid`
+// referencing `users.id`). Both write the same cookie — only one
+// identity is ever active in a given browser at a time, which is fine
+// since nothing needs to be both simultaneously. A confirmed user
+// session is NOT admin: middleware.ts still requires sub = "admin" for
+// /dashboard and /tools/invoice.
 
 export const SESSION_COOKIE = "ballyx_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
 interface SessionPayload {
-  sub: "admin";
+  sub: "admin" | "user";
+  uid?: number;
   iat: number;
 }
+
+export type SessionSubject = { sub: "admin" | "user"; uid?: number };
 
 function base64UrlEncode(bytes: Uint8Array): string {
   let binary = "";
@@ -43,12 +52,19 @@ async function getHmacKey(): Promise<CryptoKey | null> {
   );
 }
 
-/** Mint a new signed session token. Returns null if SESSION_SECRET isn't configured. */
-export async function createSessionToken(): Promise<string | null> {
+/**
+ * Mint a new signed session token — fresh every call (fresh `iat`), so a
+ * sign-in always rotates the cookie's value rather than reusing one.
+ * No `uid` → admin session. Returns null if SESSION_SECRET isn't configured.
+ */
+export async function createSessionToken(uid?: number): Promise<string | null> {
   const key = await getHmacKey();
   if (!key) return null;
 
-  const payload: SessionPayload = { sub: "admin", iat: Math.floor(Date.now() / 1000) };
+  const payload: SessionPayload =
+    uid === undefined
+      ? { sub: "admin", iat: Math.floor(Date.now() / 1000) }
+      : { sub: "user", uid, iat: Math.floor(Date.now() / 1000) };
   const payloadBytes = new TextEncoder().encode(JSON.stringify(payload));
   const payloadPart = base64UrlEncode(payloadBytes);
 
@@ -58,25 +74,33 @@ export async function createSessionToken(): Promise<string | null> {
   return `${payloadPart}.${signaturePart}`;
 }
 
-/** Verify a session token's signature and freshness. */
-export async function verifySessionToken(token: string | undefined | null): Promise<boolean> {
-  if (!token) return false;
+/**
+ * Verify a session token's signature and freshness, returning the
+ * decoded identity (or null). Signature-only — no DB call, no KDF — so
+ * it stays safe to call from the Edge runtime (middleware.ts).
+ */
+export async function getSessionSubject(
+  token: string | undefined | null
+): Promise<SessionSubject | null> {
+  if (!token) return null;
   const key = await getHmacKey();
-  if (!key) return false;
+  if (!key) return null;
 
   const [payloadPart, signaturePart] = token.split(".");
-  if (!payloadPart || !signaturePart) return false;
+  if (!payloadPart || !signaturePart) return null;
 
   let payload: SessionPayload;
   try {
     payload = JSON.parse(new TextDecoder().decode(base64UrlDecode(payloadPart)));
   } catch {
-    return false;
+    return null;
   }
-  if (payload?.sub !== "admin" || typeof payload.iat !== "number") return false;
+  if ((payload?.sub !== "admin" && payload?.sub !== "user") || typeof payload.iat !== "number") {
+    return null;
+  }
 
   const ageSeconds = Math.floor(Date.now() / 1000) - payload.iat;
-  if (ageSeconds < 0 || ageSeconds > SESSION_MAX_AGE_SECONDS) return false;
+  if (ageSeconds < 0 || ageSeconds > SESSION_MAX_AGE_SECONDS) return null;
 
   // Must verify against the same bytes that were signed — the raw JSON
   // payload bytes, not a re-encoding of the base64url string.
@@ -86,7 +110,9 @@ export async function verifySessionToken(token: string | undefined | null): Prom
     base64UrlDecode(signaturePart) as BufferSource,
     base64UrlDecode(payloadPart) as BufferSource
   );
-  return valid;
+  if (!valid) return null;
+
+  return payload.sub === "admin" ? { sub: "admin" } : { sub: "user", uid: payload.uid };
 }
 
 // `NODE_ENV === "production"` is also true for a local `next start` over

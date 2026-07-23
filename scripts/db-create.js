@@ -2,15 +2,10 @@
 // (Postgres has no "CREATE DATABASE IF NOT EXISTS"). Usage: npm run db:create
 const { Client } = require("pg");
 require("./load-env")();
+const { getPgConfig } = require("./pg-config");
 
 async function main() {
-  const client = new Client({
-    host: process.env.PGHOST ?? "localhost",
-    port: process.env.PGPORT ? Number(process.env.PGPORT) : 5432,
-    user: process.env.PGUSER,
-    password: process.env.PGPASSWORD,
-    database: "postgres",
-  });
+  const client = new Client(getPgConfig({ database: "postgres" }));
   await client.connect();
   const { rows } = await client.query(
     "SELECT 1 FROM pg_database WHERE datname = $1",

@@ -97,13 +97,55 @@ server action in [`lib/actions/contact.ts`](lib/actions/contact.ts).
   box with zero backend config. Set both env vars (see `.env.example`) to
   actually email a notification via [Resend](https://resend.com).
 - There's a `TODO(rate-limiting)` comment in `contact.ts` marking where to
-  add IP/session-based rate limiting before this goes live for real.
+  add IP/session-based rate limiting before this goes live for real —
+  still open. (The sign-up/sign-in/confirm actions below do have real
+  rate limiting; it just hasn't been ported back to this older form yet.)
+
+### Sign-up / sign-in
+
+Separate from the single shared admin login below: real email/password
+accounts with email confirmation, for
+[`lib/actions/signup.ts`](lib/actions/signup.ts) /
+[`signin.ts`](lib/actions/signin.ts) / [`confirm.ts`](lib/actions/confirm.ts),
+backing `/signup`, `/signin`, and `/auth/confirm`.
+
+- **Signing up and confirming an account does not grant access to
+  `/dashboard` or `/tools/invoice`.** Those stay admin-only — see
+  `middleware.ts`, which checks the session's `sub` claim (`"admin"` vs
+  `"user"`), not just "is there a valid session." This is currently just
+  the auth mechanism; nothing is wired up to use it as a permission yet.
+- Passwords are hashed with `@node-rs/argon2` (Node-only), separate from
+  the admin account's scrypt hash in `lib/auth/password.ts`.
+- The signup response is **identical** for a new account, an already-
+  registered email, and a rate-limited attempt — see the invariants
+  documented at the top of `lib/actions/signup.ts`. An already-registered
+  email gets a notice email instead of telling the requester.
+- Confirmation tokens: only a `sha256` hash is ever stored
+  (`email_verification_tokens.token_hash`, `bytea`); the raw token exists
+  only in the emailed link. The link is a GET page
+  (`app/auth/confirm/page.tsx`) rendering a button that POSTs to actually
+  consume the token — GET itself never does, so mail-security-gateway
+  link prefetching can't burn it before the user clicks.
+- Rate limiting (`lib/auth/rate-limit.ts`) is a single atomic
+  `INSERT ... ON CONFLICT DO UPDATE` per check against the `rate_limits`
+  table — signup 5/hr by IP and 3/hr by email, sign-in 10/hr by IP,
+  confirm 20/hr by IP. IP is only trusted from `x-forwarded-for` when
+  `VERCEL === "1"`; elsewhere requests share one IP-bucket and only the
+  email-based limit narrows further.
+- `/signup`, `/signin`, and `/auth/confirm` get a stricter CSP than the
+  rest of the site (no `unsafe-eval`) — see Security below.
+- No email is sent from the confirmation handler and no session is
+  created there either — see the comment in `lib/actions/confirm.ts`.
 
 ### Database
 
 Postgres, via `pg` — connection pool in [`lib/db.ts`](lib/db.ts), configured
 with `PGHOST`/`PGPORT`/`PGUSER`/`PGPASSWORD`/`PGDATABASE` (see
-`.env.example`). Schema in [`db/schema.sql`](db/schema.sql).
+`.env.example`). Schema in [`db/schema.sql`](db/schema.sql) — **one file**,
+every statement `CREATE TABLE/INDEX IF NOT EXISTS`, no migration-tracking
+table. New tables are appended here rather than as separate numbered
+migration files, since `scripts/db-migrate.js` only ever applies this one
+file — there's no runner for a `migrations/` directory.
 
 - `npm run db:migrate` — creates/updates tables (idempotent, safe to re-run).
 - `npm run db:seed` — (re)populates the dashboard demo tables from
@@ -129,6 +171,8 @@ What's backed by it:
   explicitly ephemeral (domain toggles, "create backup", "submit ticket",
   settings form) still only update client-side state and are not written
   back to Postgres.
+- **Sign-up / sign-in** — `users`, `email_verification_tokens`, and
+  `rate_limits` (see the Sign-up / sign-in section above).
 
 ### Security
 
@@ -140,6 +184,14 @@ What's backed by it:
   animations were tested and confirmed to silently fail (content stuck at
   `opacity: 0`, no visible error) without it. The reasoning is documented
   in a comment directly above the CSP in `next.config.ts`.
+- `/signup`, `/signin`, and `/auth/confirm` get their own, stricter CSP
+  (no `unsafe-eval`) via a separate `headers()` entry in `next.config.ts`
+  — those pages have no scroll-reveal animations and collect credentials,
+  so it's worth the extra header block. The two `headers()` entries use
+  mutually exclusive `source` patterns (a negative lookahead on the
+  catch-all) so exactly one ever matches a given path, rather than
+  relying on same-key header-merge precedence between two overlapping
+  entries.
 - Secrets (`RESEND_API_KEY`) are read from `process.env` server-side only
   and never referenced from client components.
 
@@ -210,6 +262,11 @@ this list also covers placeholders that aren't literally bracketed
       the sitemap and disallowed in `robots.ts`. Give `dashboard_*` tables
       a real account/customer relationship before promoting this beyond
       a demo, and update the "Demo preview" badges/copy once it's real.
+      Real email/password accounts now exist (`/signup`, `/signin`, see
+      the Sign-up / sign-in section above) but are deliberately kept
+      separate from this admin gate — wire `/dashboard` up to per-account
+      access via those `users` rows when there's an actual reason for
+      public accounts to reach it (e.g. Pluto licensing).
 - [ ] `dashboard_invoices.amount` (seeded in `db/seed.sql`) — currently
       `{{INVOICE_AMOUNT}}` placeholders
 
