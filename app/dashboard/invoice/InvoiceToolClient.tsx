@@ -80,7 +80,7 @@ export default function InvoiceToolClient({ customers, settings, savedItems }: P
           <div className={styles.brandSub}>Fill in the details, then download a PDF.</div>
         </div>
         <div className={styles.actions} style={{ marginTop: 0 }}>
-          <Link href="/tools/invoice/settings" className={styles.ghost}>
+          <Link href="/dashboard/invoice/settings" className={styles.ghost}>
             Settings
           </Link>
           <button type="button" className={styles.ghost} onClick={handleReset}>

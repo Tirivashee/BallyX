@@ -61,8 +61,8 @@ export async function updateInvoiceSettings(
     return { status: "error", message: "Could not save settings. Try again." };
   }
 
-  revalidatePath("/tools/invoice");
-  revalidatePath("/tools/invoice/settings");
+  revalidatePath("/dashboard/invoice");
+  revalidatePath("/dashboard/invoice/settings");
   return { status: "success", message: "Settings saved." };
 }
 
@@ -102,13 +102,13 @@ export async function addSavedItem(
     return { status: "error", message: "Could not save the item. Try again." };
   }
 
-  revalidatePath("/tools/invoice");
-  revalidatePath("/tools/invoice/settings");
+  revalidatePath("/dashboard/invoice");
+  revalidatePath("/dashboard/invoice/settings");
   return { status: "success", message: "Item saved." };
 }
 
 export async function deleteSavedItem(id: number): Promise<void> {
   await query(`DELETE FROM invoice_tool_saved_items WHERE id = $1`, [id]);
-  revalidatePath("/tools/invoice");
-  revalidatePath("/tools/invoice/settings");
+  revalidatePath("/dashboard/invoice");
+  revalidatePath("/dashboard/invoice/settings");
 }

@@ -177,8 +177,8 @@ CREATE INDEX IF NOT EXISTS idx_dashboard_ticket_messages_ticket_id
 -- Email/password accounts (signup/signin/confirm) — separate from the
 -- single shared admin account in ADMIN_USERNAME/ADMIN_PASSWORD_HASH.
 -- A confirmed user session is NOT admin: middleware.ts still requires
--- sub = 'admin' for /dashboard and /tools/invoice, so this table is
--- currently just the auth mechanism, not a source of new access.
+-- sub = 'admin' for /dashboard, so this table only unlocks /account
+-- (profile, avatar, newsletter opt-in, delete account), never /dashboard.
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
@@ -189,6 +189,20 @@ CREATE TABLE IF NOT EXISTS users (
   -- TODO(licensing): a `licenses` table will reference users(id) once
   -- Pluto licensing is wired up.
 );
+
+-- Added for the /account area + newsletter sending. ADD COLUMN IF NOT
+-- EXISTS (not folded into the CREATE TABLE above) since this file is
+-- re-run against an already-existing users table.
+ALTER TABLE users ADD COLUMN IF NOT EXISTS display_name TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_key TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS newsletter_subscribed BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS newsletter_unsubscribed_at TIMESTAMPTZ;
+-- "Delete my account" is a soft-delete/anonymize (see lib/actions/account.ts):
+-- email is scrambled and freed up for re-signup, password_hash cleared so
+-- sign-in can never succeed again, but the row stays so newsletter send
+-- history keeps referential integrity. Every user-facing read of this
+-- table (sign-in, /account, getCurrentUser) must filter deleted_at IS NULL.
+ALTER TABLE users ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;
 
 -- Raw tokens exist only in the confirmation email; only their sha256
 -- hash is ever stored, as a bytea so lookups hit the primary key index
@@ -215,3 +229,97 @@ CREATE TABLE IF NOT EXISTS rate_limits (
   window_start TIMESTAMPTZ NOT NULL,
   count INTEGER NOT NULL DEFAULT 0
 );
+
+-- ---------------------------------------------------------------------
+-- Admin-managed apps catalog (/dashboard/apps). Additive to the static
+-- Pluto/Mars/Venus entries in lib/downloads.ts, not a replacement — see
+-- that file's header comment. /downloads merges both sources by slug.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS apps (
+  id SERIAL PRIMARY KEY,
+  slug TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  icon_url TEXT,
+  tagline TEXT NOT NULL DEFAULT '',
+  description TEXT NOT NULL DEFAULT '',
+  version TEXT NOT NULL DEFAULT '',
+  release_date TEXT NOT NULL DEFAULT '',
+  platforms TEXT[] NOT NULL DEFAULT '{}',
+  delivery_type TEXT NOT NULL DEFAULT 'desktop' CHECK (delivery_type IN ('desktop', 'cloud')),
+  file_size TEXT,
+  access TEXT,
+  download_ready BOOLEAN NOT NULL DEFAULT false,
+  download_url TEXT,
+  -- [{ src, alt, caption }] — src is a plain URL until Vercel Blob is
+  -- wired up (see lib/blob.ts), then a Blob URL.
+  screenshots JSONB NOT NULL DEFAULT '[]',
+  published BOOLEAN NOT NULL DEFAULT false,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- ---------------------------------------------------------------------
+-- Blog (/dashboard/blog admin, /blog + /blog/[slug] public). No author
+-- FK — the only writer is the single shared admin identity, which has
+-- no row anywhere to reference (see ADMIN_USERNAME/ADMIN_PASSWORD_HASH
+-- comment above). content_html is re-sanitized server-side on every
+-- write (lib/actions/blog.ts) regardless of what the Tiptap client sent.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS blog_posts (
+  id SERIAL PRIMARY KEY,
+  slug TEXT NOT NULL UNIQUE,
+  title TEXT NOT NULL,
+  excerpt TEXT NOT NULL DEFAULT '',
+  cover_image_url TEXT,
+  content_html TEXT NOT NULL DEFAULT '',
+  author_name TEXT NOT NULL DEFAULT 'BallyX Team',
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
+  published_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_blog_posts_status_published_at
+  ON blog_posts(status, published_at DESC);
+
+-- ---------------------------------------------------------------------
+-- Newsletter / email adverts (/dashboard/newsletter) — reusable
+-- templates plus a per-recipient send log, so a partial batch failure
+-- is visible and auditable rather than an opaque "sent" checkbox.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS email_templates (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  body_html TEXT NOT NULL DEFAULT '',
+  body_text TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS newsletter_sends (
+  id SERIAL PRIMARY KEY,
+  template_id INTEGER REFERENCES email_templates(id) ON DELETE SET NULL,
+  subject TEXT NOT NULL, -- snapshot at send time, survives template edits/deletes
+  status TEXT NOT NULL DEFAULT 'queued' CHECK (status IN ('queued', 'sending', 'completed', 'failed')),
+  total_recipients INTEGER NOT NULL DEFAULT 0,
+  sent_count INTEGER NOT NULL DEFAULT 0,
+  failed_count INTEGER NOT NULL DEFAULT 0,
+  started_at TIMESTAMPTZ,
+  completed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS newsletter_send_recipients (
+  id SERIAL PRIMARY KEY,
+  send_id INTEGER NOT NULL REFERENCES newsletter_sends(id) ON DELETE CASCADE,
+  user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  email TEXT NOT NULL, -- snapshot, survives account deletion/anonymization
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'sent', 'failed')),
+  error TEXT,
+  sent_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_newsletter_send_recipients_send_id
+  ON newsletter_send_recipients(send_id);

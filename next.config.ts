@@ -66,6 +66,19 @@ const authSecurityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      // The invoice tool moved from its own standalone area into the
+      // admin dashboard (/dashboard/invoice) so it lives alongside the
+      // other admin content-management tools.
+      { source: "/tools/invoice", destination: "/dashboard/invoice", permanent: true },
+      {
+        source: "/tools/invoice/settings",
+        destination: "/dashboard/invoice/settings",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       // Auth routes get their own headers block with a distinct `source`

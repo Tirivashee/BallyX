@@ -25,7 +25,7 @@ export default async function InvoiceSettingsPage() {
           </div>
         </div>
         <div className={styles.actions} style={{ marginTop: 0 }}>
-          <Link href="/tools/invoice" className={styles.ghost}>
+          <Link href="/dashboard/invoice" className={styles.ghost}>
             ← Back to invoice
           </Link>
         </div>

@@ -535,9 +535,9 @@ export const contact = {
 
 /**
  * Email/password signup + sign-in, separate from the single shared admin
- * login. Creating and confirming an account does not grant access to
- * /dashboard or /tools/invoice — those stay admin-only. See
- * lib/auth/session.ts and middleware.ts.
+ * login. Creating and confirming an account grants access to /account
+ * only — /dashboard stays admin-only. See lib/auth/session.ts and
+ * middleware.ts.
  */
 export const auth = {
   signup: {

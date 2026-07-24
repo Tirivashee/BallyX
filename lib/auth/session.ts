@@ -10,7 +10,8 @@
 // identity is ever active in a given browser at a time, which is fine
 // since nothing needs to be both simultaneously. A confirmed user
 // session is NOT admin: middleware.ts still requires sub = "admin" for
-// /dashboard and /tools/invoice.
+// /dashboard, and (separately) sub = "user" for /account — a confirmed
+// user never unlocks /dashboard, an admin session never unlocks /account.
 
 export const SESSION_COOKIE = "ballyx_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 days

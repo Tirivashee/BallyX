@@ -11,6 +11,7 @@ import {
   CreditCard,
   LifeBuoy,
   Settings,
+  Receipt,
 } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
@@ -27,6 +28,7 @@ const dashboardNav = [
   { label: "Activity", href: "/dashboard/activity", icon: Activity },
   { label: "Billing", href: "/dashboard/billing", icon: CreditCard },
   { label: "Support", href: "/dashboard/support", icon: LifeBuoy },
+  { label: "Invoice", href: "/dashboard/invoice", icon: Receipt },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ] as const;
 
