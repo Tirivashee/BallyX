@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/layout/container";
 import { DownloadCard } from "@/components/sections/downloads/download-card";
 import { ClosingCTA } from "@/components/sections/home/closing-cta";
-import { downloads } from "@/lib/downloads";
+import { getAllApps } from "@/lib/downloads";
 import { brand } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -12,7 +12,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/downloads" },
 };
 
-export default function DownloadsPage() {
+// force-dynamic: the list now includes admin-published apps from the
+// database (see lib/downloads.ts's getAllApps), so it can't be statically
+// generated at build time.
+export const dynamic = "force-dynamic";
+
+export default async function DownloadsPage() {
+  const downloads = await getAllApps();
+
   return (
     <>
       <section className="border-b border-ink/10 py-20 md:py-28">

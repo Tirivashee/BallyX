@@ -14,7 +14,9 @@ export const AVATAR_PRESETS = [
 
 export type AvatarKey = (typeof AVATAR_PRESETS)[number]["key"];
 
-const AVATAR_BY_KEY = new Map(AVATAR_PRESETS.map((preset) => [preset.key, preset]));
+const AVATAR_BY_KEY = new Map<string, (typeof AVATAR_PRESETS)[number]>(
+  AVATAR_PRESETS.map((preset) => [preset.key, preset]),
+);
 
 export function isAvatarKey(value: string): value is AvatarKey {
   return AVATAR_BY_KEY.has(value);

@@ -2,18 +2,41 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { brand, nav } from "@/lib/site-config";
 import { Button } from "@/components/ui/button";
 import { BrandName } from "@/components/ui/brand-name";
+import { AccountMenu } from "@/components/layout/account-menu";
+import type { CurrentUser } from "@/lib/auth/current-user";
+import { logout } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+
+  // Fetched client-side rather than read from the root layout on the
+  // server — reading the session cookie there would force every page on
+  // the site to render dynamically (see app/api/me/route.ts), which would
+  // cost this marketing site static generation everywhere just to
+  // personalize the header for signed-in users. Defaults to signed-out
+  // (the CTA) until this resolves, since most visitors are signed out.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!cancelled) setCurrentUser(data?.user ?? null);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/50 bg-paper/55 backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_8px_32px_-12px_rgba(21,22,26,0.18)]">
@@ -45,9 +68,13 @@ export function Header() {
         </nav>
 
         <div className="hidden md:block">
-          <Button asChild size="sm">
-            <Link href="/contact">Book a consultation</Link>
-          </Button>
+          {currentUser ? (
+            <AccountMenu user={currentUser} />
+          ) : (
+            <Button asChild size="sm">
+              <Link href="/contact">Book a consultation</Link>
+            </Button>
+          )}
         </div>
 
         <button
@@ -81,11 +108,31 @@ export function Header() {
                   {item.label}
                 </Link>
               ))}
-              <Button asChild className="mt-2 w-full">
-                <Link href="/contact" onClick={() => setOpen(false)}>
-                  Book a consultation
-                </Link>
-              </Button>
+              {currentUser ? (
+                <>
+                  <Link
+                    href="/account"
+                    onClick={() => setOpen(false)}
+                    className="rounded-md px-2 py-3 text-base font-medium text-ink hover:bg-ink/5"
+                  >
+                    Account settings
+                  </Link>
+                  <form action={logout}>
+                    <button
+                      type="submit"
+                      className="w-full rounded-md px-2 py-3 text-left text-base font-medium text-ink hover:bg-ink/5"
+                    >
+                      Log out
+                    </button>
+                  </form>
+                </>
+              ) : (
+                <Button asChild className="mt-2 w-full">
+                  <Link href="/contact" onClick={() => setOpen(false)}>
+                    Book a consultation
+                  </Link>
+                </Button>
+              )}
             </nav>
           </motion.div>
         )}

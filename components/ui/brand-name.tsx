@@ -15,15 +15,19 @@ export function BrandName({
 }) {
   const parts = text.split("BallyX");
 
-  return parts.map((part, i) => (
-    <Fragment key={i}>
-      {part}
-      {i < parts.length - 1 && (
-        <>
-          Bally
-          <span className={className}>X</span>
-        </>
-      )}
-    </Fragment>
-  ));
+  return (
+    <span>
+      {parts.map((part, i) => (
+        <Fragment key={i}>
+          {part}
+          {i < parts.length - 1 && (
+            <>
+              Bally
+              <span className={className}>X</span>
+            </>
+          )}
+        </Fragment>
+      ))}
+    </span>
+  );
 }

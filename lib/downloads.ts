@@ -1,3 +1,4 @@
+import { query } from "@/lib/db";
 import { pluto } from "@/lib/site-config";
 
 /**
@@ -305,3 +306,58 @@ export const downloads: DownloadApp[] = [
     ],
   },
 ];
+
+type AppRow = {
+  slug: string;
+  name: string;
+  icon_url: string | null;
+  tagline: string;
+  description: string;
+  version: string;
+  release_date: string;
+  platforms: string[];
+  delivery_type: "desktop" | "cloud";
+  file_size: string | null;
+  access: string | null;
+  download_ready: boolean;
+  download_url: string | null;
+  screenshots: { src: string; alt: string; caption: string }[];
+};
+
+function rowToDownloadApp(row: AppRow): DownloadApp {
+  return {
+    id: row.slug,
+    name: row.name,
+    icon: row.icon_url || "/images/app-icons/placeholder.svg",
+    tagline: row.tagline,
+    description: row.description,
+    version: row.version,
+    releaseDate: row.release_date,
+    platforms: row.platforms,
+    deliveryType: row.delivery_type,
+    fileSize: row.file_size ?? undefined,
+    access: row.access ?? undefined,
+    downloadReady: row.download_ready,
+    downloadUrl: row.download_url ?? undefined,
+    detailHref: `/downloads/${row.slug}`,
+    screenshots: row.screenshots ?? [],
+    // differentiators/features/faq deliberately omitted — admin-added
+    // apps are catalog listings, not full marketing pages (see
+    // db/schema.sql's `apps` table comment).
+  };
+}
+
+/** Admin-added apps published from /dashboard/apps, additive to the static list above. */
+export async function getPublishedApps(): Promise<DownloadApp[]> {
+  const rows = await query<AppRow>(
+    `SELECT slug, name, icon_url, tagline, description, version, release_date, platforms,
+            delivery_type, file_size, access, download_ready, download_url, screenshots
+     FROM apps WHERE published = true ORDER BY sort_order, id`,
+  );
+  return rows.map(rowToDownloadApp);
+}
+
+/** Everything /downloads should list: the static entries plus published DB apps. */
+export async function getAllApps(): Promise<DownloadApp[]> {
+  return [...downloads, ...(await getPublishedApps())];
+}

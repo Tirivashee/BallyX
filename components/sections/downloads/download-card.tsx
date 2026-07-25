@@ -21,10 +21,14 @@ export function DownloadCard({
       <div className="flex h-full flex-col rounded-lg border border-ink/10 bg-paper-soft p-8">
         <Link href={app.detailHref} className="flex items-center gap-4">
           <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-ink/10 bg-paper">
+            {/* unoptimized: admin-added apps (lib/downloads.ts's getPublishedApps) can
+                point icon at an arbitrary external URL not in next.config.ts's image
+                allowlist. */}
             <Image
               src={app.icon}
               alt={`${app.name} icon`}
               fill
+              unoptimized
               className="object-cover"
               sizes="64px"
             />

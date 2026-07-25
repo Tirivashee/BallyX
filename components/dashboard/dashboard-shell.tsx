@@ -12,6 +12,9 @@ import {
   LifeBuoy,
   Settings,
   Receipt,
+  Package,
+  FileText,
+  Mail,
 } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
@@ -28,6 +31,9 @@ const dashboardNav = [
   { label: "Activity", href: "/dashboard/activity", icon: Activity },
   { label: "Billing", href: "/dashboard/billing", icon: CreditCard },
   { label: "Support", href: "/dashboard/support", icon: LifeBuoy },
+  { label: "Apps", href: "/dashboard/apps", icon: Package },
+  { label: "Blog", href: "/dashboard/blog", icon: FileText },
+  { label: "Newsletter", href: "/dashboard/newsletter", icon: Mail },
   { label: "Invoice", href: "/dashboard/invoice", icon: Receipt },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ] as const;

@@ -17,7 +17,7 @@ import { ClosingCTA } from "@/components/sections/home/closing-cta";
 import { DifferentiatorsDetail } from "@/components/sections/product/differentiators-detail";
 import { FeatureGrid } from "@/components/sections/product/feature-grid";
 import { ProductFaq } from "@/components/sections/product/product-faq";
-import { downloads } from "@/lib/downloads";
+import { getAllApps } from "@/lib/downloads";
 
 // Positional icons for each app's `differentiators` (matched by array index).
 // Add an entry here if another app grows a `differentiators` list.
@@ -26,13 +26,16 @@ const differentiatorIcons: Record<string, LucideIcon[]> = {
   venus: [ShieldCheck, DollarSign, Lock],
 };
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ app: string }>;
 }): Promise<Metadata> {
   const { app: slug } = await params;
-  const app = downloads.find((a) => a.id === slug);
+  const apps = await getAllApps();
+  const app = apps.find((a) => a.id === slug);
 
   if (!app) return {};
 
@@ -49,7 +52,8 @@ export default async function AppDetailPage({
   params: Promise<{ app: string }>;
 }) {
   const { app: slug } = await params;
-  const app = downloads.find((a) => a.id === slug);
+  const apps = await getAllApps();
+  const app = apps.find((a) => a.id === slug);
 
   if (!app) {
     notFound();

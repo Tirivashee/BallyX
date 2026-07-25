@@ -14,10 +14,13 @@ export function AppHero({ app }: { app: DownloadApp }) {
       <Container>
         <div className="flex items-center gap-5">
           <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-ink/10 bg-paper-soft">
+            {/* unoptimized: see components/sections/downloads/download-card.tsx —
+                admin-added apps can point icon at an arbitrary external URL. */}
             <Image
               src={app.icon}
               alt={`${app.name} icon`}
               fill
+              unoptimized
               className="object-cover"
               sizes="80px"
               priority
