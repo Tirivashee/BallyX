@@ -3,7 +3,7 @@ import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 
 import "./globals.css";
 import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { FooterGate } from "@/components/layout/footer-gate";
 import { brand } from "@/lib/site-config";
 
 const spaceGrotesk = Space_Grotesk({
@@ -94,7 +94,7 @@ export default function RootLayout({
         />
         <Header />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <FooterGate />
       </body>
     </html>
   );

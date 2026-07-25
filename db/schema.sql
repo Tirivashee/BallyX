@@ -83,95 +83,20 @@ CREATE TABLE IF NOT EXISTS invoice_tool_saved_items (
 );
 
 -- ---------------------------------------------------------------------
--- Hosting dashboard (/dashboard) — single shared demo dataset.
--- Access is gated by one shared admin session (see lib/auth/session.ts +
--- middleware.ts), not per-account auth, so these tables hold one
--- illustrative dataset rather than per-user rows.
+-- The hosting-ops demo dashboard (Sites/Domains/Backups/Activity/Billing/
+-- Support) and the "BallyX Hosting" product it previewed have both been
+-- removed — /dashboard is now the apps/blog/newsletter/invoice admin
+-- console instead. Drop the illustrative tables that backed it.
 -- ---------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS dashboard_sites (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  domain TEXT NOT NULL,
-  status TEXT NOT NULL CHECK (status IN ('Live', 'Building', 'Paused')),
-  plan TEXT NOT NULL,
-  last_deploy TEXT NOT NULL,
-  sort_order INTEGER NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_domains (
-  domain TEXT PRIMARY KEY,
-  status TEXT NOT NULL CHECK (status IN ('Active', 'Pending', 'Expired')),
-  registrar TEXT NOT NULL,
-  registered_on TEXT NOT NULL,
-  expires_on TEXT NOT NULL,
-  auto_renew BOOLEAN NOT NULL DEFAULT true,
-  privacy_protection BOOLEAN NOT NULL DEFAULT true,
-  locked BOOLEAN NOT NULL DEFAULT true,
-  nameservers TEXT[] NOT NULL DEFAULT '{}',
-  ssl TEXT NOT NULL,
-  sort_order INTEGER NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_dns_records (
-  id TEXT PRIMARY KEY,
-  domain TEXT NOT NULL REFERENCES dashboard_domains(domain) ON DELETE CASCADE,
-  type TEXT NOT NULL CHECK (type IN ('A', 'CNAME', 'MX', 'TXT', 'NS')),
-  name TEXT NOT NULL,
-  value TEXT NOT NULL,
-  ttl TEXT NOT NULL DEFAULT '3600',
-  sort_order INTEGER NOT NULL DEFAULT 0
-);
-
-CREATE INDEX IF NOT EXISTS idx_dashboard_dns_records_domain
-  ON dashboard_dns_records(domain);
-
-CREATE TABLE IF NOT EXISTS dashboard_backups (
-  id TEXT PRIMARY KEY,
-  site TEXT NOT NULL,
-  created_at TEXT NOT NULL,
-  size TEXT NOT NULL,
-  type TEXT NOT NULL CHECK (type IN ('Automatic', 'Manual')),
-  sort_order INTEGER NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_activity (
-  id TEXT PRIMARY KEY,
-  timestamp TEXT NOT NULL,
-  actor TEXT NOT NULL,
-  action TEXT NOT NULL,
-  detail TEXT NOT NULL,
-  sort_order INTEGER NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_invoices (
-  id TEXT PRIMARY KEY,
-  date TEXT NOT NULL,
-  description TEXT NOT NULL,
-  amount TEXT NOT NULL,
-  status TEXT NOT NULL CHECK (status IN ('Paid', 'Due', 'Overdue')),
-  sort_order INTEGER NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_tickets (
-  id TEXT PRIMARY KEY,
-  subject TEXT NOT NULL,
-  status TEXT NOT NULL CHECK (status IN ('Open', 'Closed')),
-  created_at TEXT NOT NULL,
-  last_update TEXT NOT NULL,
-  sort_order INTEGER NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS dashboard_ticket_messages (
-  id SERIAL PRIMARY KEY,
-  ticket_id TEXT NOT NULL REFERENCES dashboard_tickets(id) ON DELETE CASCADE,
-  from_actor TEXT NOT NULL CHECK (from_actor IN ('You', 'BallyX Support')),
-  body TEXT NOT NULL,
-  at TEXT NOT NULL,
-  sort_order INTEGER NOT NULL DEFAULT 0
-);
-
-CREATE INDEX IF NOT EXISTS idx_dashboard_ticket_messages_ticket_id
-  ON dashboard_ticket_messages(ticket_id);
+DROP TABLE IF EXISTS
+  dashboard_ticket_messages,
+  dashboard_tickets,
+  dashboard_invoices,
+  dashboard_activity,
+  dashboard_backups,
+  dashboard_dns_records,
+  dashboard_domains,
+  dashboard_sites;
 
 -- ---------------------------------------------------------------------
 -- Email/password accounts (signup/signin/confirm) — separate from the

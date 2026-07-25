@@ -115,11 +115,10 @@ accounts with email confirmation, for
 [`signin.ts`](lib/actions/signin.ts) / [`confirm.ts`](lib/actions/confirm.ts),
 backing `/signup`, `/signin`, and `/auth/confirm`.
 
-- **Signing up and confirming an account does not grant access to
-  `/dashboard` or `/tools/invoice`.** Those stay admin-only — see
-  `middleware.ts`, which checks the session's `sub` claim (`"admin"` vs
-  `"user"`), not just "is there a valid session." This is currently just
-  the auth mechanism; nothing is wired up to use it as a permission yet.
+- **Signing up and confirming an account grants access to `/account`
+  only — `/dashboard` stays admin-only.** See `middleware.ts`, which
+  checks the session's `sub` claim (`"admin"` vs `"user"`) against a
+  per-route-prefix rule table, not just "is there a valid session."
 - Passwords are hashed with `@node-rs/argon2` (Node-only), separate from
   the admin account's scrypt hash in `lib/auth/password.ts`.
 - The signup response is **identical** for a new account, an already-
@@ -154,9 +153,9 @@ migration files, since `scripts/db-migrate.js` only ever applies this one
 file — there's no runner for a `migrations/` directory.
 
 - `npm run db:migrate` — creates/updates tables (idempotent, safe to re-run).
-- `npm run db:seed` — (re)populates the dashboard demo tables from
-  [`db/seed.sql`](db/seed.sql). Truncates and reinserts, so it's meant for
-  the illustrative dashboard data only — never run it against real
+- `npm run db:seed` — (re)seeds the invoice tool's real sender defaults
+  from [`db/seed.sql`](db/seed.sql) (`ON CONFLICT DO NOTHING`, so it never
+  overwrites an admin edit). Never run it against real
   `contact_submissions` or `invoice_tool_invoices` rows.
 
 What's backed by it:
@@ -164,21 +163,20 @@ What's backed by it:
   inserted into `contact_submissions` (in addition to the email
   notification / console log). A DB failure here is logged but doesn't
   fail the user's submission.
-- **Invoice tool** (`/tools/invoice`) — every generated PDF is saved to
-  `invoice_tool_invoices` / `invoice_tool_items`. Note this changes the
+- **Invoice tool** (`/dashboard/invoice`) — every generated PDF is saved
+  to `invoice_tool_invoices` / `invoice_tool_items`. Note this changes the
   tool's original "no persistence" design (see
   `tools/ballyx-invoice-tool/README.md`, which still describes the
   stateless, redistributable version — that copy is untouched).
-- **Hosting dashboard** (`/dashboard`) — sites, domains, DNS records,
-  backups, activity, billing invoices, and support tickets all read from
-  `lib/dashboard-data.ts` instead of the old `lib/dashboard-mock.ts`. It's
-  still one shared demo dataset, not per-account data — see the TODO
-  below on dashboard auth. Interactive demo actions that were always
-  explicitly ephemeral (domain toggles, "create backup", "submit ticket",
-  settings form) still only update client-side state and are not written
-  back to Postgres.
-- **Sign-up / sign-in** — `users`, `email_verification_tokens`, and
-  `rate_limits` (see the Sign-up / sign-in section above).
+- **Admin dashboard** (`/dashboard`) — the apps catalog, blog, and
+  newsletter templates/send log are real, admin-managed Postgres tables
+  (`apps`, `blog_posts`, `email_templates`, `newsletter_sends` /
+  `newsletter_send_recipients` — see `db/schema.sql`), gated by the same
+  single shared admin session as the invoice tool.
+- **Sign-up / sign-in / account** — `users` (now also holding
+  `display_name`, `avatar_key`, `newsletter_subscribed`, `deleted_at`),
+  `email_verification_tokens`, and `rate_limits` (see the Sign-up /
+  sign-in section above).
 
 ### Security
 
@@ -246,30 +244,19 @@ this list also covers placeholders that aren't literally bracketed
       `components/sections/home/founder-note.tsx` and
       `components/sections/about/team.tsx` with real photos
 
-**Hosting (`lib/site-config.ts`)**
-- [ ] `hosting.status` / `hosting.statusDisplay` — current real status
-- [ ] `hosting.pricing` / `hosting.pricingDisplay` — real pricing once decided
-- [ ] `hosting.plans[].price` — real prices for Starter/Standard/Pro once set
-- [ ] `hosting.guarantees` — real uptime SLA % and money-back policy
-      (currently `{{HOSTING_UPTIME_SLA}}` / `{{HOSTING_MONEY_BACK_POLICY}}`)
-- [ ] `/dashboard/*` and `/tools/invoice/*` are gated by a single shared
-      admin session (`lib/auth/session.ts` + `middleware.ts`,
-      `ADMIN_USERNAME`/`ADMIN_PASSWORD_HASH`/`SESSION_SECRET` in
-      `.env.local`), not real per-account/customer auth. Dashboard data
-      (sites, domains, DNS records, invoices, backups, activity, support
-      tickets) comes from Postgres via `lib/dashboard-data.ts`, but it's
-      still one shared illustrative dataset, not per-customer data, and
-      none of it is connected to real infrastructure. It's excluded from
-      the sitemap and disallowed in `robots.ts`. Give `dashboard_*` tables
-      a real account/customer relationship before promoting this beyond
-      a demo, and update the "Demo preview" badges/copy once it's real.
-      Real email/password accounts now exist (`/signup`, `/signin`, see
-      the Sign-up / sign-in section above) but are deliberately kept
-      separate from this admin gate — wire `/dashboard` up to per-account
-      access via those `users` rows when there's an actual reason for
-      public accounts to reach it (e.g. Pluto licensing).
-- [ ] `dashboard_invoices.amount` (seeded in `db/seed.sql`) — currently
-      `{{INVOICE_AMOUNT}}` placeholders
+**Admin dashboard (`/dashboard`)**
+- [ ] Gated by a single shared admin session (`lib/auth/session.ts` +
+      `middleware.ts`, `ADMIN_USERNAME`/`ADMIN_PASSWORD_HASH`/
+      `SESSION_SECRET` in `.env.local`), not per-admin accounts — fine at
+      one-operator scale, revisit if a second admin ever needs their own
+      login. It's excluded from the sitemap and disallowed in `robots.ts`.
+- [ ] Real self-signup accounts (`/signup`, `/signin`, `/account`) are
+      deliberately separate from this admin gate and never unlock
+      `/dashboard` — see the Sign-up / sign-in section above.
+- [ ] Vercel Blob isn't provisioned yet — the apps/blog admin forms take
+      a plain image URL for icons/screenshots/cover images instead of a
+      real upload widget until `BLOB_READ_WRITE_TOKEN` is set (see
+      `.env.example`).
 
 **Downloads (`lib/downloads.ts`)**
 - [ ] Every app's `version`, `releaseDate`, and `fileSize` are

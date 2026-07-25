@@ -3,9 +3,8 @@ import type { Metadata } from "next";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 
 export const metadata: Metadata = {
-  title: "Client dashboard (demo)",
-  description:
-    "Preview of the BallyX Hosting client dashboard — UI only, not connected to real infrastructure yet.",
+  title: { default: "Admin", template: "%s — BallyX Admin" },
+  description: "BallyX admin console — apps, blog, newsletter, and invoicing.",
   robots: { index: false, follow: false },
 };
 

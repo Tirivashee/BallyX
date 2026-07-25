@@ -19,6 +19,12 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
 
+  // /dashboard is a fully separate, full-screen admin app shell (see
+  // components/dashboard/dashboard-shell.tsx) — it must never show the
+  // marketing header/footer around it. The only way back to the normal
+  // site view is logging out (which redirects away from /dashboard).
+  const isDashboard = pathname.startsWith("/dashboard");
+
   // Fetched client-side rather than read from the root layout on the
   // server — reading the session cookie there would force every page on
   // the site to render dynamically (see app/api/me/route.ts), which would
@@ -26,6 +32,7 @@ export function Header() {
   // personalize the header for signed-in users. Defaults to signed-out
   // (the CTA) until this resolves, since most visitors are signed out.
   useEffect(() => {
+    if (isDashboard) return;
     let cancelled = false;
     fetch("/api/me")
       .then((res) => (res.ok ? res.json() : null))
@@ -36,7 +43,9 @@ export function Header() {
     return () => {
       cancelled = true;
     };
-  }, [pathname]);
+  }, [pathname, isDashboard]);
+
+  if (isDashboard) return null;
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/50 bg-paper/55 backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_8px_32px_-12px_rgba(21,22,26,0.18)]">

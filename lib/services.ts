@@ -65,17 +65,4 @@ export const services: Service[] = [
       "Guidance on data handling & access control",
     ],
   },
-  {
-    id: "hosting",
-    title: "BallyX Hosting",
-    eyebrow: "05",
-    description:
-      "Managed hosting for the sites and systems we build you — deployments, SSL, and uptime handled so you don't have to think about infrastructure.",
-    capabilities: [
-      "Managed deployments & updates",
-      "Free SSL & custom domains",
-      "Uptime monitoring & backups",
-    ],
-    href: "/hosting",
-  },
 ];

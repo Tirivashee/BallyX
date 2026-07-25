@@ -24,7 +24,7 @@ export default async function LoginPage({
             <BrandName text="Sign in to BallyX" />
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-            Admin access to the client dashboard and invoice generator.
+            Admin access to the BallyX content and email console.
           </p>
 
           <LoginForm next={next && next.startsWith("/") ? next : "/dashboard"} />

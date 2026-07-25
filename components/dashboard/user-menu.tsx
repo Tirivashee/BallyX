@@ -4,17 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { LogOut } from "lucide-react";
 
 import { logout } from "@/lib/actions/auth";
-import { demoUser } from "@/lib/dashboard-demo-user";
 
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
-
+// There's a single shared admin session (see lib/auth/session.ts), not a
+// real accounts table — no name/email/plan to show, just "Admin" and a
+// logout action.
 export function UserMenu() {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -46,18 +39,14 @@ export function UserMenu() {
         aria-label="Account menu"
         className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-xs font-semibold tracking-wide text-paper transition-opacity hover:opacity-90"
       >
-        {getInitials(demoUser.name)}
+        A
       </button>
 
       {open && (
-        <div className="absolute right-0 z-10 mt-2 w-64 rounded-lg border border-ink/10 bg-paper-soft p-4 shadow-lg">
-          <p className="text-sm font-medium text-ink">{demoUser.name}</p>
-          <p className="text-xs text-ink-soft">{demoUser.email}</p>
-          <span className="mt-2 inline-block rounded-sm bg-ink/5 px-2 py-0.5 text-xs text-ink-soft">
-            {demoUser.plan} plan
-          </span>
+        <div className="absolute right-0 z-10 mt-2 w-56 rounded-lg border border-ink/10 bg-paper-soft p-4 shadow-lg">
+          <p className="text-sm font-medium text-ink">Admin</p>
 
-          <div className="mt-4 border-t border-ink/10 pt-3">
+          <div className="mt-3 border-t border-ink/10 pt-3">
             <form action={logout}>
               <button
                 type="submit"
