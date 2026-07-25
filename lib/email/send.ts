@@ -1,6 +1,13 @@
 // Thin wrapper around the same Resend call lib/actions/contact.ts already
 // makes (no `resend` package — @node-rs/argon2 is the only new dependency
 // this auth work adds). Node-only: reads RESEND_API_KEY.
+import { brand } from "@/lib/site-config";
+
+// Requires ballyx.co.zw to be added and verified as a sending domain in
+// Resend (SPF/DKIM records) — see README. Sends fail with a 403 until
+// that's done.
+const FROM_ADDRESS = `${brand.name} <${brand.email}>`;
+
 type SendEmailInput = {
   to: string;
   subject: string;
@@ -28,7 +35,7 @@ export async function sendEmail({ to, subject, html, text }: SendEmailInput): Pr
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "BallyX <onboarding@resend.dev>",
+      from: FROM_ADDRESS,
       to: [to],
       subject,
       html,
@@ -79,7 +86,7 @@ export async function sendBatchEmail(
       },
       body: JSON.stringify(
         chunk.map((email) => ({
-          from: "BallyX <onboarding@resend.dev>",
+          from: FROM_ADDRESS,
           to: [email.to],
           subject: email.subject,
           html: email.html,

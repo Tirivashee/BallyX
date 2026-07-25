@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { query } from "@/lib/db";
+import { brand } from "@/lib/site-config";
 
 /**
  * All input is validated here, server-side, regardless of what the client
@@ -94,7 +95,7 @@ export async function submitContactForm(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "BallyX Website <onboarding@resend.dev>",
+          from: `${brand.name} Website <${brand.email}>`,
           to: [notifyEmail],
           reply_to: email,
           subject: `New contact form submission from ${name}`,

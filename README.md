@@ -96,6 +96,12 @@ server action in [`lib/actions/contact.ts`](lib/actions/contact.ts).
   validated and logged to the server console — the form works out of the
   box with zero backend config. Set both env vars (see `.env.example`) to
   actually email a notification via [Resend](https://resend.com).
+- All outgoing mail (this form, and sign-up confirmation / newsletter
+  emails via `lib/email/send.ts`) sends from `brand.email`
+  (`lib/site-config.ts`) — currently `hello@ballyx.co.zw`. That domain
+  must be added and verified as a sending domain in the Resend dashboard
+  (SPF/DKIM DNS records) before this works; sends fail with a 403 until
+  then. Update `brand.email` there too if the sending address ever changes.
 - There's a `TODO(rate-limiting)` comment in `contact.ts` marking where to
   add IP/session-based rate limiting before this goes live for real —
   still open. (The sign-up/sign-in/confirm actions below do have real
