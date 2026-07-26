@@ -98,7 +98,7 @@ server action in [`lib/actions/contact.ts`](lib/actions/contact.ts).
   actually email a notification via [Resend](https://resend.com).
 - All outgoing mail (this form, and sign-up confirmation / newsletter
   emails via `lib/email/send.ts`) sends from `brand.email`
-  (`lib/site-config.ts`) — currently `hello@ballyx.co.zw`. That domain
+  (`lib/site-config.ts`) — currently `support@ballyx.co.zw`. That domain
   must be added and verified as a sending domain in the Resend dashboard
   (SPF/DKIM DNS records) before this works; sends fail with a 403 until
   then. Update `brand.email` there too if the sending address ever changes.

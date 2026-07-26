@@ -32,7 +32,7 @@ export const brand = {
     display: "Harare, Zimbabwe",
   },
   url: "https://www.ballyx.co.zw", // {{SITE_URL}} — update once the domain is live
-  email: "hello@ballyx.co.zw", // {{CONTACT_EMAIL}}
+  email: "support@ballyx.co.zw", // {{CONTACT_EMAIL}}
   whatsapp: {
     // {{WHATSAPP_NUMBER}} — international format, digits only (no +, spaces, or dashes)
     number: "263771234567",
