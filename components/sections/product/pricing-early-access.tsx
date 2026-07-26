@@ -18,9 +18,9 @@ export function PricingEarlyAccess() {
               {pluto.pricingDisplay}
             </h2>
             <p className="mt-4 max-w-md text-base leading-relaxed text-paper/70">
-              We haven&apos;t finalized pricing yet — Pluto is in{" "}
-              {pluto.statusDisplay.toLowerCase()}. Founding customers who come
-              on now get locked-in early pricing once it&apos;s set.
+              Pluto is in {pluto.statusDisplay.toLowerCase()}. Founding
+              customers who come on now keep this price for as long as
+              they&apos;re subscribed, even after it changes at wider release.
             </p>
           </div>
 

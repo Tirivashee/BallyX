@@ -15,7 +15,10 @@ const PAGE_RULES: Rule[] = [
   { prefixes: ["/dashboard"], requires: "admin" },
   { prefixes: ["/account"], requires: "user" },
 ];
-const API_RULES: Rule[] = [{ prefixes: ["/api/invoice"], requires: "admin" }];
+const API_RULES: Rule[] = [
+  { prefixes: ["/api/invoice"], requires: "admin" },
+  { prefixes: ["/api/blob"], requires: "admin" },
+];
 
 function matchRule(rules: Rule[], pathname: string): Rule | undefined {
   return rules.find((rule) => rule.prefixes.some((prefix) => pathname.startsWith(prefix)));
@@ -57,5 +60,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/account/:path*", "/api/invoice/:path*"],
+  matcher: ["/dashboard/:path*", "/account/:path*", "/api/invoice/:path*", "/api/blob/:path*"],
 };

@@ -13,7 +13,17 @@ module.exports = function loadEnv() {
     const eq = trimmed.indexOf("=");
     if (eq === -1) continue;
     const key = trimmed.slice(0, eq).trim();
-    const value = trimmed.slice(eq + 1).trim();
+    let value = trimmed.slice(eq + 1).trim();
+    // `vercel env pull` writes values double-quoted (dotenv convention);
+    // Next.js's own env loader strips this automatically, but this
+    // standalone loader didn't — strip a single matching pair so
+    // PGHOST etc. don't end up as the literal string `"localhost"`.
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
     if (!(key in process.env)) {
       process.env[key] = value;
     }

@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 
 import { BlogEditor } from "@/components/dashboard/blog/blog-editor";
+import { ImageUploadField } from "@/components/dashboard/image-upload-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,11 +26,13 @@ export function PostForm({
   const [state, formAction, pending] = useActionState(action, initialState);
   const [published, setPublished] = useState(post?.status === "published");
   const [contentHtml, setContentHtml] = useState(post?.contentHtml ?? "");
+  const [coverImageUrl, setCoverImageUrl] = useState(post?.coverImageUrl ?? "");
 
   return (
     <form action={formAction} className="max-w-2xl space-y-6">
       <input type="hidden" name="status" value={published ? "published" : "draft"} />
       <input type="hidden" name="contentHtml" value={contentHtml} />
+      <input type="hidden" name="coverImageUrl" value={coverImageUrl} />
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -59,18 +62,14 @@ export function PostForm({
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="coverImageUrl">Cover image URL</Label>
-        <Input
-          id="coverImageUrl"
-          name="coverImageUrl"
-          defaultValue={post?.coverImageUrl ?? ""}
-          placeholder="https://…"
-        />
-        <p className="text-xs text-ink-soft">
-          Optional. A real upload widget lands once Vercel Blob is provisioned.
-        </p>
-      </div>
+      <ImageUploadField
+        id="coverImageUrl"
+        label="Cover image"
+        value={coverImageUrl}
+        onChange={setCoverImageUrl}
+        folder="blog/covers"
+        helpText="Optional."
+      />
 
       <div className="space-y-2">
         <Label htmlFor="authorName">Author name</Label>

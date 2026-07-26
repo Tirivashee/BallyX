@@ -24,9 +24,8 @@ export function FounderNote() {
           </div>
 
           <div className="mt-8 flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-dashed border-ink/25 text-xs font-medium text-ink-soft">
-              {/* Placeholder avatar — replace with a real photo */}
-              FN
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ink text-sm font-medium text-paper">
+              TC
             </div>
             <div>
               <p className="text-sm font-medium text-ink">

@@ -26,7 +26,7 @@ export function AppScreenshotGallery({
           Inside {appName}
         </span>
         <h2 className="mt-4 max-w-xl font-heading text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-          Placeholder screenshots — real product shots go here.
+          A closer look at {appName}.
         </h2>
 
         <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2">

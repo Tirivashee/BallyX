@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageUploadField } from "@/components/dashboard/image-upload-field";
 import type { ActionState } from "@/lib/actions/apps-admin";
 import type { AdminApp } from "@/lib/apps-admin-data";
 import { cn } from "@/lib/utils";
@@ -31,6 +32,7 @@ export function AppForm({
   const [downloadReady, setDownloadReady] = useState(app?.downloadReady ?? false);
   const [published, setPublished] = useState(app?.published ?? false);
   const [screenshots, setScreenshots] = useState<Screenshot[]>(app?.screenshots ?? []);
+  const [iconUrl, setIconUrl] = useState(app?.iconUrl ?? "");
 
   const addScreenshot = () => setScreenshots((s) => [...s, { src: "", alt: "", caption: "" }]);
   const updateScreenshot = (i: number, patch: Partial<Screenshot>) =>
@@ -43,6 +45,7 @@ export function AppForm({
       <input type="hidden" name="downloadReady" value={downloadReady ? "true" : "false"} />
       <input type="hidden" name="published" value={published ? "true" : "false"} />
       <input type="hidden" name="screenshotsJson" value={JSON.stringify(screenshots)} />
+      <input type="hidden" name="iconUrl" value={iconUrl} />
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -65,19 +68,14 @@ export function AppForm({
         <Textarea id="description" name="description" defaultValue={app?.description} rows={4} />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="iconUrl">Icon URL</Label>
-        <Input
-          id="iconUrl"
-          name="iconUrl"
-          defaultValue={app?.iconUrl ?? ""}
-          placeholder="https://…"
-        />
-        <p className="text-xs text-ink-soft">
-          Leave blank to use a placeholder icon. A real upload widget lands once Vercel Blob is
-          provisioned.
-        </p>
-      </div>
+      <ImageUploadField
+        id="iconUrl"
+        label="Icon"
+        value={iconUrl}
+        onChange={setIconUrl}
+        folder="apps/icons"
+        helpText="Leave blank to use a placeholder icon."
+      />
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -178,28 +176,29 @@ export function AppForm({
       <div className="space-y-3">
         <Label>Screenshots</Label>
         {screenshots.map((s, i) => (
-          <div
-            key={i}
-            className="grid grid-cols-1 gap-2 rounded-md border border-ink/10 p-3 sm:grid-cols-[1fr_1fr_1fr_auto]"
-          >
-            <Input
-              placeholder="Image URL"
+          <div key={i} className="space-y-2 rounded-md border border-ink/10 p-3">
+            <ImageUploadField
+              id={`screenshot-${i}`}
+              label={`Screenshot ${i + 1}`}
               value={s.src}
-              onChange={(e) => updateScreenshot(i, { src: e.target.value })}
+              onChange={(url) => updateScreenshot(i, { src: url })}
+              folder="apps/screenshots"
             />
-            <Input
-              placeholder="Alt text"
-              value={s.alt}
-              onChange={(e) => updateScreenshot(i, { alt: e.target.value })}
-            />
-            <Input
-              placeholder="Caption"
-              value={s.caption}
-              onChange={(e) => updateScreenshot(i, { caption: e.target.value })}
-            />
-            <Button type="button" variant="ghost" size="sm" onClick={() => removeScreenshot(i)}>
-              Remove
-            </Button>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_1fr_auto]">
+              <Input
+                placeholder="Alt text"
+                value={s.alt}
+                onChange={(e) => updateScreenshot(i, { alt: e.target.value })}
+              />
+              <Input
+                placeholder="Caption"
+                value={s.caption}
+                onChange={(e) => updateScreenshot(i, { caption: e.target.value })}
+              />
+              <Button type="button" variant="ghost" size="sm" onClick={() => removeScreenshot(i)}>
+                Remove
+              </Button>
+            </div>
           </div>
         ))}
         <Button type="button" variant="outline" size="sm" onClick={addScreenshot}>

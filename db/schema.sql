@@ -156,9 +156,10 @@ CREATE TABLE IF NOT EXISTS rate_limits (
 );
 
 -- ---------------------------------------------------------------------
--- Admin-managed apps catalog (/dashboard/apps). Additive to the static
--- Pluto/Mars/Venus entries in lib/downloads.ts, not a replacement — see
--- that file's header comment. /downloads merges both sources by slug.
+-- Apps catalog (/dashboard/apps, /downloads). Every published app lives
+-- here, including Pluto/Mars/Venus (seeded in db/seed.sql) — this is the
+-- single source of truth, editable and photo-uploadable from the admin
+-- dashboard. See lib/downloads.ts.
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS apps (
   id SERIAL PRIMARY KEY,
@@ -178,11 +179,23 @@ CREATE TABLE IF NOT EXISTS apps (
   -- [{ src, alt, caption }] — src is a plain URL until Vercel Blob is
   -- wired up (see lib/blob.ts), then a Blob URL.
   screenshots JSONB NOT NULL DEFAULT '[]',
+  -- Deeper marketing content (same shape as pluto.differentiators /
+  -- .features / .faq in site-config.ts). Not exposed in the /dashboard/apps
+  -- form — populated directly for Pluto/Mars/Venus (see db/seed.sql) so
+  -- their existing marketing pages keep working now that they're DB rows;
+  -- admin-added apps just get the '[]' default and render as simple
+  -- catalog listings.
+  differentiators JSONB NOT NULL DEFAULT '[]',
+  features JSONB NOT NULL DEFAULT '[]',
+  faq JSONB NOT NULL DEFAULT '[]',
   published BOOLEAN NOT NULL DEFAULT false,
   sort_order INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+ALTER TABLE apps ADD COLUMN IF NOT EXISTS differentiators JSONB NOT NULL DEFAULT '[]';
+ALTER TABLE apps ADD COLUMN IF NOT EXISTS features JSONB NOT NULL DEFAULT '[]';
+ALTER TABLE apps ADD COLUMN IF NOT EXISTS faq JSONB NOT NULL DEFAULT '[]';
 
 -- ---------------------------------------------------------------------
 -- Blog (/dashboard/blog admin, /blog + /blog/[slug] public). No author

@@ -20,14 +20,14 @@ import type { NextConfig } from "next";
  *   - The WhatsApp CTA is a plain <a href="https://wa.me/...">, not a
  *     fetch, so it isn't governed by connect-src at all.
  */
-function buildCsp(scriptSrc: string): string {
+function buildCsp(scriptSrc: string, { imgSrc = "'self' data:", connectSrc = "'self'" } = {}): string {
   return `
     default-src 'self';
     script-src ${scriptSrc};
     style-src 'self' 'unsafe-inline';
-    img-src 'self' data:;
+    img-src ${imgSrc};
     font-src 'self' data:;
-    connect-src 'self';
+    connect-src ${connectSrc};
     frame-ancestors 'none';
     base-uri 'self';
     form-action 'self';
@@ -36,7 +36,15 @@ function buildCsp(scriptSrc: string): string {
     .trim();
 }
 
-const ContentSecurityPolicy = buildCsp("'self' 'unsafe-inline' 'unsafe-eval'");
+// img-src/connect-src both need Vercel Blob's hosts for the admin apps/blog
+// upload widgets (components/dashboard/image-upload-field.tsx): the client
+// upload() call posts to vercel.com's API, and the resulting public files
+// are served from <store-id>.public.blob.vercel-storage.com. Auth pages
+// below deliberately don't get this — they have no image uploads.
+const ContentSecurityPolicy = buildCsp("'self' 'unsafe-inline' 'unsafe-eval'", {
+  imgSrc: "'self' data: https://*.public.blob.vercel-storage.com",
+  connectSrc: "'self' https://vercel.com",
+});
 
 // The signup/signin/confirm pages have no Framer Motion scroll-reveal
 // animations, so they don't need 'unsafe-eval' — and since they collect

@@ -96,8 +96,8 @@ export const pluto = {
   category: "Local-first POS & business management",
   status: "Early access", // e.g. "Early access" once true
   statusDisplay: "Early access",
-  pricing: "From $29.99/year", // e.g. "From $XX/month" once confirmed
-  pricingDisplay: "TBC — founding customers get locked-in early pricing",
+  pricing: "$29.99/month",
+  pricingDisplay: "$29.99/month, locked in for founding customers",
   platform: "Desktop app (Windows) — built with Tauri + React",
   tagline: "The register that doesn't stop working when the power does.",
   subhead:
@@ -209,7 +209,7 @@ export const pluto = {
     {
       question: "What does Pluto cost?",
       answer:
-        "Pricing is $29.99/month. Founding customers who join during early access will get preferential, locked-in pricing as a thank-you for coming in early.",
+        "Pluto is $29.99/month. Founding customers who join during early access get that price locked in for as long as they stay subscribed, even after general pricing changes at wider release.",
     },
     {
       question: "What devices does Pluto run on?",
